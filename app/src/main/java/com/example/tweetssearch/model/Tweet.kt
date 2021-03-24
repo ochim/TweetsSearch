@@ -1,8 +1,10 @@
 package com.example.tweetssearch.model
 
+import com.squareup.moshi.Json
+
 data class Tweet(
     val text: String,
-    val createdAt: String
+    @Json(name = "created_at") val createdAt: String
 )
 
 val dummyTweets = listOf(

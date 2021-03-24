@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tweetssearch.R
 import com.example.tweetssearch.model.Tweet
 
-class TweetAdapter(private val context: Context, private val dataset: List<Tweet>, private val onClick: (Tweet) -> Unit)
+class TweetAdapter(private val context: Context, private var dataset: List<Tweet> = listOf(), private val onClick: (Tweet) -> Unit)
     : RecyclerView.Adapter<TweetAdapter.ItemViewHolder>()  {
 
     class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -31,4 +31,9 @@ class TweetAdapter(private val context: Context, private val dataset: List<Tweet
     }
 
     override fun getItemCount() = dataset.size
-}
+
+    fun updateDataSet(data: List<Tweet>) {
+        dataset = data
+        notifyDataSetChanged()
+    }
+ }

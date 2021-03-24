@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.tweetssearch.adapter.KeywordAdapter
 import com.example.tweetssearch.adapter.TweetAdapter
 import com.example.tweetssearch.databinding.FragmentHomeBinding
-import com.example.tweetssearch.model.dummyTweets
 
 /**
  * 開始地点となるフラグメント
@@ -22,6 +22,8 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private val viewModel by activityViewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,18 +40,31 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dummyKeywords = listOf("hoge", "foo", "piyo")
+        val dummyKeywords = listOf("#androiddev", "androiddev", "#androiddevchallenge")
         val keywordsRecyclerView = binding.recyclerKeywords
         val tweetsRecyclerView = binding.recyclerTweets
         val editText = binding.textInputEditText
 
-        keywordsRecyclerView.adapter = KeywordAdapter(requireActivity(), dummyKeywords) { keyword ->
-            keywordsRecyclerView.visibility = View.GONE
-            tweetsRecyclerView.visibility = View.VISIBLE
+        binding.buttonSearch.setOnClickListener() {
+            viewModel.tweetsSearch(editText.text.toString())
             editText.clearFocus()
         }
 
-        tweetsRecyclerView.adapter = TweetAdapter(requireActivity(), dummyTweets) {}
+        keywordsRecyclerView.adapter = KeywordAdapter(requireActivity(), dummyKeywords) { keyword ->
+            keywordsRecyclerView.visibility = View.GONE
+            tweetsRecyclerView.visibility = View.VISIBLE
+            viewModel.tweetsSearch(keyword)
+            editText.clearFocus()
+        }
+
+        val initialTweetsAdapter = TweetAdapter(requireActivity()) {}
+        tweetsRecyclerView.adapter = initialTweetsAdapter
+
+        viewModel.liveTweets.observe(viewLifecycleOwner, { tweets ->
+            if (!tweets.isNullOrEmpty()) {
+                initialTweetsAdapter.updateDataSet(tweets)
+            }
+        })
 
         editText.onFocusChangeListener = View.OnFocusChangeListener { view1, hasFocus ->
 
