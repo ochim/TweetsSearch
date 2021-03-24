@@ -46,18 +46,19 @@ class HomeFragment : Fragment() {
         val editText = binding.textInputEditText
 
         binding.buttonSearch.setOnClickListener() {
-            viewModel.tweetsSearch(editText.text.toString())
+            val text = editText.text.toString()
+            if (!text.isNullOrEmpty()) {
+                viewModel.tweetsSearch(text)
+            }
             editText.clearFocus()
         }
 
         keywordsRecyclerView.adapter = KeywordAdapter(requireActivity(), dummyKeywords) { keyword ->
-            keywordsRecyclerView.visibility = View.GONE
-            tweetsRecyclerView.visibility = View.VISIBLE
             viewModel.tweetsSearch(keyword)
             editText.clearFocus()
         }
 
-        val initialTweetsAdapter = TweetAdapter(requireActivity()) {}
+        val initialTweetsAdapter = TweetAdapter(requireActivity()) { editText.clearFocus() }
         tweetsRecyclerView.adapter = initialTweetsAdapter
 
         viewModel.liveTweets.observe(viewLifecycleOwner, { tweets ->
@@ -70,8 +71,9 @@ class HomeFragment : Fragment() {
 
             if (hasFocus) {
                 keywordsRecyclerView.visibility = View.VISIBLE
-                tweetsRecyclerView.visibility = View.GONE
             } else {
+                keywordsRecyclerView.visibility = View.GONE
+
                 // hide the software keyboard
                 val imm =
                     requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
@@ -80,6 +82,8 @@ class HomeFragment : Fragment() {
                 )
             }
         }
+
+        editText.requestFocus()
 
     }
 

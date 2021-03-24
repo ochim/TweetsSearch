@@ -37,8 +37,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_keywords"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:scrollbars="vertical"
+        android:visibility="gone"
         app:layoutManager="LinearLayoutManager" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -46,7 +47,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:visibility="gone"
         app:layoutManager="LinearLayoutManager" />
 
 </LinearLayout>
