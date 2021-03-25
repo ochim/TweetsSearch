@@ -59,6 +59,8 @@ class HomeFragment : Fragment() {
             editText.clearFocus()
         }
 
+        binding.buttonCancel.setOnClickListener { editText.clearFocus() }
+
         val keywordAdapter = KeywordAdapter(requireActivity()) { keyword ->
             viewModel.tweetsSearch(keyword)
             editText.clearFocus()
@@ -101,8 +103,10 @@ class HomeFragment : Fragment() {
             if (hasFocus) {
                 viewModel.loadKeywordsHistory()
                 keywordsRecyclerView.visibility = View.VISIBLE
+                binding.layoutButtons.visibility = View.VISIBLE
             } else {
                 keywordsRecyclerView.visibility = View.GONE
+                binding.layoutButtons.visibility = View.GONE
 
                 // hide the software keyboard
                 val imm =
