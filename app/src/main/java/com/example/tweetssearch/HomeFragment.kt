@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tweetssearch.adapter.KeywordAdapter
 import com.example.tweetssearch.adapter.TweetAdapter
+import com.example.tweetssearch.component.LoadingDialog
 import com.example.tweetssearch.databinding.FragmentHomeBinding
 import timber.log.Timber
 
@@ -19,6 +20,7 @@ import timber.log.Timber
  * 開始地点となるフラグメント
  */
 class HomeFragment : Fragment() {
+    private val loading = LoadingDialog.newInstance()
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -51,6 +53,7 @@ class HomeFragment : Fragment() {
             val text = editText.text.toString()
             if (text.isNotEmpty()) {
                 viewModel.tweetsSearch(text)
+                loading.show(parentFragmentManager, "tag")
             }
             editText.clearFocus()
         }
@@ -58,6 +61,7 @@ class HomeFragment : Fragment() {
         val keywordAdapter = KeywordAdapter(requireActivity()) { keyword ->
             viewModel.tweetsSearch(keyword)
             editText.clearFocus()
+            loading.show(parentFragmentManager, "tag")
         }
         keywordsRecyclerView.adapter = keywordAdapter
 
@@ -83,6 +87,7 @@ class HomeFragment : Fragment() {
         tweetsRecyclerView.addOnScrollListener(RecyclerViewScrollListener(manager))
 
         viewModel.liveTweets.observe(viewLifecycleOwner, { tweets ->
+            loading.dismiss()
             if (!tweets.isNullOrEmpty()) {
                 initialTweetsAdapter.updateDataSet(tweets)
                 tweetsRecyclerView.setHasFixedSize(true)
@@ -107,6 +112,7 @@ class HomeFragment : Fragment() {
         }
 
         editText.requestFocus()
+
     }
 
     override fun onDestroyView() {
