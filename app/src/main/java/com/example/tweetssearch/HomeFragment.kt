@@ -8,9 +8,12 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.tweetssearch.adapter.KeywordAdapter
 import com.example.tweetssearch.adapter.TweetAdapter
 import com.example.tweetssearch.databinding.FragmentHomeBinding
+import timber.log.Timber
 
 /**
  * 開始地点となるフラグメント
@@ -60,10 +63,24 @@ class HomeFragment : Fragment() {
 
         val initialTweetsAdapter = TweetAdapter(requireActivity()) { editText.clearFocus() }
         tweetsRecyclerView.adapter = initialTweetsAdapter
+        tweetsRecyclerView.setHasFixedSize(true)
+
+        // fragment_home.xmlで定義済み
+        val manager = tweetsRecyclerView.layoutManager!! as LinearLayoutManager
+
+        class RecyclerViewScrollListener(layoutManager: LinearLayoutManager) : EndlessRecyclerViewScrollListener(layoutManager){
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                Timber.d("page: $page $totalItemsCount")
+                viewModel.nextTweetsSearch()
+            }
+        }
+        // 一番下までスクロールしたら、onLoadMore が実行される
+        tweetsRecyclerView.addOnScrollListener(RecyclerViewScrollListener(manager))
 
         viewModel.liveTweets.observe(viewLifecycleOwner, { tweets ->
             if (!tweets.isNullOrEmpty()) {
                 initialTweetsAdapter.updateDataSet(tweets)
+                tweetsRecyclerView.setHasFixedSize(true)
             }
         })
 
@@ -84,7 +101,6 @@ class HomeFragment : Fragment() {
         }
 
         editText.requestFocus()
-
     }
 
     override fun onDestroyView() {

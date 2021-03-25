@@ -13,22 +13,35 @@ import timber.log.Timber
 interface TweetsSearchInterface {
     @GET("1.1/search/tweets.json")
     fun tweetsSearch(
-        @Query("q") q: String,
         @Header("Authorization") authorization: String,
+        @Query("q") q: String,
+        @Query("count") count: Int,
     ): Call<SearchResult>
+
+    @GET("1.1/search/tweets.json")
+    fun nextTweetsSearch(
+        @Header("Authorization") authorization: String,
+        @Query("q") q: String,
+        @Query("max_id") id: Long,
+        @Query("count") count: Int,
+    ): Call<SearchResult>
+
 }
 
 data class SearchResult(val statuses: List<Tweet>?)
 
 class TweetsSearchRepository {
 
-    suspend fun tweetsSearch(accessToken: String, q: String): List<Tweet>? {
+    private val searchInterface: TweetsSearchInterface =
+        TwitterRepository.retrofit.create(TweetsSearchInterface::class.java)
+
+    suspend fun tweetsSearch(accessToken: String, q: String, count: Int): List<Tweet>? {
         return withContext(Dispatchers.IO) {
             try {
                 //WEB APIから取得する
-                val searchInterface =
-                    TwitterRepository.retrofit.create(TweetsSearchInterface::class.java)
-                val response = searchInterface.tweetsSearch(q, "Bearer $accessToken").execute()
+                val response = searchInterface
+                    .tweetsSearch("Bearer $accessToken", q, count)
+                    .execute()
                 if (response.isSuccessful) {
                     val result = response.body()!!
                     result.statuses
@@ -45,6 +58,32 @@ class TweetsSearchRepository {
                 null
             }
 
+        }
+    }
+
+    suspend fun nextTweetsSearch(
+        accessToken: String,
+        q: String,
+        max_id: Long,
+        count: Int
+    ): List<Tweet>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                //WEB APIから取得する
+                val response = searchInterface
+                    .nextTweetsSearch("Bearer $accessToken", q, max_id, count)
+                    .execute()
+                if (response.isSuccessful) {
+                    val result = response.body()!!
+                    result.statuses
+                } else {
+                    null
+                }
+
+            } catch (ex: Exception) {
+                Timber.e(ex.toString())
+                null
+            }
         }
 
     }
