@@ -43,23 +43,28 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dummyKeywords = listOf("#androiddev", "androiddev", "#androiddevchallenge")
         val keywordsRecyclerView = binding.recyclerKeywords
         val tweetsRecyclerView = binding.recyclerTweets
         val editText = binding.textInputEditText
 
         binding.buttonSearch.setOnClickListener() {
             val text = editText.text.toString()
-            if (!text.isNullOrEmpty()) {
+            if (text.isNotEmpty()) {
                 viewModel.tweetsSearch(text)
             }
             editText.clearFocus()
         }
 
-        keywordsRecyclerView.adapter = KeywordAdapter(requireActivity(), dummyKeywords) { keyword ->
+        val keywordAdapter = KeywordAdapter(requireActivity()) { keyword ->
             viewModel.tweetsSearch(keyword)
             editText.clearFocus()
         }
+        keywordsRecyclerView.adapter = keywordAdapter
+
+        viewModel.liveKeywords.observe(viewLifecycleOwner, { keywords ->
+            if (keywords.isNullOrEmpty()) return@observe
+            keywordAdapter.updateDataSet(keywords)
+        })
 
         val initialTweetsAdapter = TweetAdapter(requireActivity()) { editText.clearFocus() }
         tweetsRecyclerView.adapter = initialTweetsAdapter
@@ -87,6 +92,7 @@ class HomeFragment : Fragment() {
         editText.onFocusChangeListener = View.OnFocusChangeListener { view1, hasFocus ->
 
             if (hasFocus) {
+                viewModel.loadKeywordsHistory()
                 keywordsRecyclerView.visibility = View.VISIBLE
             } else {
                 keywordsRecyclerView.visibility = View.GONE

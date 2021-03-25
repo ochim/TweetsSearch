@@ -13,7 +13,7 @@ import com.example.tweetssearch.model.Tweet
 
 class TweetAdapter(
     private val context: Context,
-    private var dataset: List<Tweet> = listOf(),
+    private var dataset: List<Tweet> = emptyList(),
     private val onClick: (Tweet) -> Unit
 ) : RecyclerView.Adapter<TweetAdapter.ItemViewHolder>() {
 

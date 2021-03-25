@@ -2,6 +2,7 @@ package com.example.tweetssearch
 
 import android.app.Application
 import com.chibatching.kotpref.Kotpref
+import com.example.tweetssearch.database.Database
 import timber.log.Timber
 
 class MainApplication: Application() {
@@ -15,6 +16,7 @@ class MainApplication: Application() {
         }
 
         Kotpref.init(applicationContext)
+        Database.setDb(applicationContext)
     }
 
     /** A tree which logs important information for crash reporting.  */

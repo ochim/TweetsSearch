@@ -6,11 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.tweetssearch.model.Token
 import com.example.tweetssearch.model.Tweet
 import com.example.tweetssearch.repository.AccessTokenRepository
+import com.example.tweetssearch.repository.KeywordsRepository
 import com.example.tweetssearch.repository.TweetsSearchRepository
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
     val liveTweets: MutableLiveData<List<Tweet>?> = MutableLiveData()
+    val liveKeywords: MutableLiveData<List<String>?> = MutableLiveData()
+
     var tempQuery: String? = null
 
     fun tweetsSearch(q: String) {
@@ -20,7 +23,10 @@ class MainViewModel : ViewModel() {
 
             val list = TweetsSearchRepository().tweetsSearch(token, q, FIRST_PAGE_SIZE)
             liveTweets.postValue(list)
+
             tempQuery = q
+            // キーワード履歴に入れる
+            KeywordsRepository().saveKeyword(q)
         }
     }
 
@@ -44,6 +50,13 @@ class MainViewModel : ViewModel() {
             newList.addAll(list)
 
             liveTweets.postValue(newList)
+        }
+    }
+
+    fun loadKeywordsHistory() {
+        viewModelScope.launch {
+            val keywords = KeywordsRepository().getRecentKeywords()
+            liveKeywords.postValue(keywords)
         }
     }
 
