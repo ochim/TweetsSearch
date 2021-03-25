@@ -33,7 +33,7 @@ class TweetAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val tweet = dataset[position]
-        holder.nameView.text = tweet.user.name
+        holder.nameView.text = "${tweet.user.name}  @${tweet.user.screen_name}"
         holder.textView.text = tweet.text
         holder.createdAtView.text = tweet.createdAt
         holder.view.setOnClickListener { onClick(tweet) }
