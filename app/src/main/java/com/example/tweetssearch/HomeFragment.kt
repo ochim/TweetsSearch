@@ -54,6 +54,7 @@ class HomeFragment : Fragment() {
             if (text.isNotEmpty()) {
                 viewModel.tweetsSearch(text)
                 loading.show(parentFragmentManager, "tag")
+                editText.setText(text)
             }
             editText.clearFocus()
         }
@@ -62,6 +63,7 @@ class HomeFragment : Fragment() {
             viewModel.tweetsSearch(keyword)
             editText.clearFocus()
             loading.show(parentFragmentManager, "tag")
+            editText.setText(keyword)
         }
         keywordsRecyclerView.adapter = keywordAdapter
 
