@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tweetssearch.R
 import com.example.tweetssearch.model.Tweet
+import com.example.tweetssearch.model.TweetUtil
 
 class TweetAdapter(
     private val context: Context,
@@ -35,7 +36,7 @@ class TweetAdapter(
         val tweet = dataset[position]
         holder.nameView.text = "${tweet.user.name}  @${tweet.user.screen_name}"
         holder.textView.text = tweet.text
-        holder.createdAtView.text = tweet.createdAt
+        holder.createdAtView.text = TweetUtil().convertCreatedAt(tweet.createdAt)
         holder.view.setOnClickListener { onClick(tweet) }
 
         if (!tweet.user.profile_image_url_https.isNullOrEmpty()) {
