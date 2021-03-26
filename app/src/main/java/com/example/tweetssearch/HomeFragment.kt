@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -81,7 +82,8 @@ class HomeFragment : Fragment() {
         // fragment_home.xmlで定義済み
         val manager = tweetsRecyclerView.layoutManager!! as LinearLayoutManager
 
-        class RecyclerViewScrollListener(layoutManager: LinearLayoutManager) : EndlessRecyclerViewScrollListener(layoutManager){
+        class RecyclerViewScrollListener(layoutManager: LinearLayoutManager) :
+            EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 Timber.d("page: $page $totalItemsCount")
                 viewModel.nextTweetsSearch()
@@ -115,6 +117,18 @@ class HomeFragment : Fragment() {
                     view1?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS
                 )
             }
+        }
+
+        editText.setOnEditorActionListener { textView, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                if (textView.text.isNotEmpty()) {
+                    viewModel.tweetsSearch(textView.text.toString())
+                    loading.show(parentFragmentManager, "tag")
+                    editText.clearFocus()
+                }
+                return@setOnEditorActionListener true
+            }
+            false
         }
 
         editText.requestFocus()

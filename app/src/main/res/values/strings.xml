@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">TweetsSearch</string>
     <string name="keyword">keyword</string>
-    <string name="search">Search</string>
 </resources>
