@@ -7,10 +7,30 @@
     android:background="#000000"
     android:clickable="false">
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:indeterminate="true" />
+        android:background="@android:color/transparent"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:indeterminate="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="Loading..."
+            android:textColor="@android:color/white"
+            android:textSize="30sp" />
+
+    </LinearLayout>
 </FrameLayout>
+
