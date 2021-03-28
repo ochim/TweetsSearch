@@ -1,9 +1,11 @@
 package com.example.tweetssearch.adapter
 
 import android.content.Context
+import android.graphics.Outline
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -40,6 +42,21 @@ class TweetAdapter(
         holder.view.setOnClickListener { onClick(tweet) }
 
         if (!tweet.user.profile_image_url_https.isNullOrEmpty()) {
+            // 角を丸くする
+            holder.profileImageView.outlineProvider = object : ViewOutlineProvider() {
+
+                override fun getOutline(view: View?, outline: Outline?) {
+                    view ?: return
+                    outline?.setRoundRect(
+                        0,
+                        0,
+                        view.width,
+                        view.height,
+                        16F
+                    )
+                    view.clipToOutline = true
+                }
+            }
             Glide.with(context)
                 .load(tweet.user.profile_image_url_https)
                 .centerCrop()
