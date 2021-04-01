@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tweetssearch.R
 import com.example.tweetssearch.model.Tweet
-import com.example.tweetssearch.model.TweetUtil
+import com.example.tweetssearch.util.TweetUtil
 
 class TweetAdapter(
     private val context: Context,

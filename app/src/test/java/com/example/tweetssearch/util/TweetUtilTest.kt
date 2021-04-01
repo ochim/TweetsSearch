@@ -1,4 +1,4 @@
-package com.example.tweetssearch.model
+package com.example.tweetssearch.util
 
 import org.junit.Assert
 import org.junit.Test
