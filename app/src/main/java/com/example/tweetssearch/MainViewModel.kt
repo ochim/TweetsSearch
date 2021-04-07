@@ -13,13 +13,17 @@ import kotlinx.coroutines.launch
 class MainViewModel : ViewModel() {
     val liveTweets: MutableLiveData<List<Tweet>?> = MutableLiveData()
     val liveKeywords: MutableLiveData<List<String>?> = MutableLiveData()
+    val errorMessage: MutableLiveData<String?> = MutableLiveData()
 
     var tempQuery: String? = null
 
     fun tweetsSearch(q: String) {
         viewModelScope.launch {
             val token = AccessTokenRepository().getAccessToken()
-            token ?: return@launch
+            if (token.isNullOrEmpty()) {
+                errorMessage.postValue("authentication　error")
+                return@launch
+            }
 
             val list = TweetsSearchRepository().tweetsSearch(token, q, FIRST_PAGE_SIZE)
             liveTweets.postValue(list)

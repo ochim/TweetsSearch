@@ -8,3 +8,7 @@ Tweets Search
 <video width="360" height="480" controls>
 <source src="results/2021-03-28 23.55.16.mov" type="video/mp4">
 </video>
+
+# Twitter API
+- [Authentication](https://developer.twitter.com/en/docs/authentication/oauth-2-0/application-only)
+- [Standard search API](https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets)

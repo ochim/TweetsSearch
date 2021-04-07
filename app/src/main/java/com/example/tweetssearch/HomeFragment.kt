@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -130,6 +131,13 @@ class HomeFragment : Fragment() {
             }
             false
         }
+
+        viewModel.errorMessage.observe(viewLifecycleOwner, { message ->
+           if (!message.isNullOrEmpty()) {
+               Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
+           }
+           loading.dismiss()
+        })
 
         editText.requestFocus()
 
