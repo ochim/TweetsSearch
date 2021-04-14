@@ -106,10 +106,14 @@ class HomeFragment : Fragment() {
             if (hasFocus) {
                 viewModel.loadKeywordsHistory()
                 keywordsRecyclerView.visibility = View.VISIBLE
-                binding.layoutButtons.visibility = View.VISIBLE
+                binding.buttonSearch.visibility = View.VISIBLE
+                binding.buttonCancel.visibility = View.VISIBLE
+                tweetsRecyclerView.visibility = View.INVISIBLE
             } else {
                 keywordsRecyclerView.visibility = View.GONE
-                binding.layoutButtons.visibility = View.GONE
+                binding.buttonSearch.visibility = View.GONE
+                binding.buttonCancel.visibility = View.GONE
+                tweetsRecyclerView.visibility = View.VISIBLE
 
                 // hide the software keyboard
                 val imm =
