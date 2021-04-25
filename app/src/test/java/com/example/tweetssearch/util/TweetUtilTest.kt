@@ -11,4 +11,17 @@ class TweetUtilTest {
         // 時差は９時間とする
         Assert.assertSame("2021/03/25 22:50:48" == s, true)
     }
+
+    @Test
+    fun convertCreatedAt_wrongFormat() {
+        val s = TweetUtil().convertCreatedAt("2021/03/25 22:50:48 +0900")
+        Assert.assertSame("format error" == s, true)
+    }
+
+    @Test
+    fun convertCreatedAt_emptyText() {
+        val s = TweetUtil().convertCreatedAt("")
+        Assert.assertSame("format error" == s, true)
+    }
+
 }
