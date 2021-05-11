@@ -16,6 +16,7 @@ import com.example.tweetssearch.adapter.KeywordAdapter
 import com.example.tweetssearch.adapter.TweetAdapter
 import com.example.tweetssearch.component.LoadingDialog
 import com.example.tweetssearch.databinding.FragmentHomeBinding
+import com.example.tweetssearch.model.TweetNetworkModelState
 import timber.log.Timber
 
 /**
@@ -94,10 +95,22 @@ class HomeFragment : Fragment() {
         tweetsRecyclerView.addOnScrollListener(RecyclerViewScrollListener(manager))
 
         viewModel.liveTweets.observe(viewLifecycleOwner, { tweets ->
-            loading.dismiss()
             if (!tweets.isNullOrEmpty()) {
                 initialTweetsAdapter.updateDataSet(tweets)
                 tweetsRecyclerView.setHasFixedSize(true)
+            }
+        })
+
+        viewModel.liveState.observe(viewLifecycleOwner, { state ->
+            when (state) {
+                is TweetNetworkModelState.FetchedOK -> loading.dismiss()
+                is TweetNetworkModelState.FetchedError -> {
+                    loading.dismiss()
+                    Toast.makeText(requireActivity(), state.error.message, Toast.LENGTH_SHORT)
+                        .show()
+                }
+                else -> {
+                }
             }
         })
 
@@ -136,15 +149,7 @@ class HomeFragment : Fragment() {
             false
         }
 
-        viewModel.errorMessage.observe(viewLifecycleOwner, { message ->
-           if (!message.isNullOrEmpty()) {
-               Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
-           }
-           loading.dismiss()
-        })
-
         editText.requestFocus()
-
     }
 
     override fun onDestroyView() {
