@@ -56,7 +56,6 @@ class HomeFragment : Fragment() {
             val text = editText.text.toString()
             if (text.isNotEmpty()) {
                 viewModel.tweetsSearch(text)
-                loading.show(parentFragmentManager, "tag")
                 editText.setText(text)
             }
             editText.clearFocus()
@@ -67,7 +66,6 @@ class HomeFragment : Fragment() {
         val keywordAdapter = KeywordAdapter(requireActivity()) { keyword ->
             viewModel.tweetsSearch(keyword)
             editText.clearFocus()
-            loading.show(parentFragmentManager, "tag")
             editText.setText(keyword)
         }
         keywordsRecyclerView.adapter = keywordAdapter
@@ -103,6 +101,7 @@ class HomeFragment : Fragment() {
 
         viewModel.liveState.observe(viewLifecycleOwner, { state ->
             when (state) {
+                is TweetNetworkModelState.Fetching -> loading.show(parentFragmentManager, "tag")
                 is TweetNetworkModelState.FetchedOK -> loading.dismiss()
                 is TweetNetworkModelState.FetchedError -> {
                     loading.dismiss()
@@ -141,7 +140,6 @@ class HomeFragment : Fragment() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (textView.text.isNotEmpty()) {
                     viewModel.tweetsSearch(textView.text.toString())
-                    loading.show(parentFragmentManager, "tag")
                     editText.clearFocus()
                 }
                 return@setOnEditorActionListener true
