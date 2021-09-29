@@ -23,7 +23,7 @@ import timber.log.Timber
  * 開始地点となるフラグメント
  */
 class HomeFragment : Fragment() {
-    private val loading = LoadingDialog.newInstance()
+    private var loading: LoadingDialog? = null
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -101,10 +101,17 @@ class HomeFragment : Fragment() {
 
         viewModel.liveState.observe(viewLifecycleOwner, { state ->
             when (state) {
-                is TweetNetworkModelState.Fetching -> loading.show(parentFragmentManager, "tag")
-                is TweetNetworkModelState.FetchedOK -> loading.dismiss()
+                is TweetNetworkModelState.Fetching -> {
+                    loading = LoadingDialog.newInstance()
+                    loading?.show(parentFragmentManager, "tag")
+                }
+                is TweetNetworkModelState.FetchedOK -> {
+                    loading?.dismiss()
+                    loading = null
+                }
                 is TweetNetworkModelState.FetchedError -> {
-                    loading.dismiss()
+                    loading?.dismiss()
+                    loading = null
                     Toast.makeText(requireActivity(), state.error.message, Toast.LENGTH_SHORT)
                         .show()
                 }
