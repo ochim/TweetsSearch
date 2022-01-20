@@ -2,6 +2,7 @@ package com.example.tweetssearch.repository
 
 import com.example.tweetssearch.BuildConfig
 import com.example.tweetssearch.model.Token
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -26,10 +27,10 @@ interface AccessTokenInterface {
 
 data class AccessToken(val token_type: String, val access_token: String)
 
-class AccessTokenRepository {
+class AccessTokenRepository(private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
 
     suspend fun getAccessToken(): String? {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             // Preferenceから取得する
             if (!Token.accessToken.isNullOrEmpty()) {
                 return@withContext Token.accessToken

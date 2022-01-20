@@ -63,7 +63,7 @@ class HomeFragment : Fragment() {
 
         binding.buttonCancel.setOnClickListener { editText.clearFocus() }
 
-        val keywordAdapter = KeywordAdapter(requireActivity()) { keyword ->
+        val keywordAdapter = KeywordAdapter() { keyword ->
             viewModel.tweetsSearch(keyword)
             editText.clearFocus()
             editText.setText(keyword)
@@ -75,7 +75,7 @@ class HomeFragment : Fragment() {
             keywordAdapter.updateDataSet(keywords)
         })
 
-        val initialTweetsAdapter = TweetAdapter(requireActivity()) { editText.clearFocus() }
+        val initialTweetsAdapter = TweetAdapter() { editText.clearFocus() }
         tweetsRecyclerView.adapter = initialTweetsAdapter
         tweetsRecyclerView.setHasFixedSize(true)
 

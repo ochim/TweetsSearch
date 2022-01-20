@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tweetssearch.R
 
 class KeywordAdapter(
-    private val context: Context,
     private var dataset: List<String> = emptyList(),
     private val onClick: (String) -> Unit
 ) : RecyclerView.Adapter<KeywordAdapter.ItemViewHolder>() {

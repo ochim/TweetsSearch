@@ -15,7 +15,6 @@ import com.example.tweetssearch.model.Tweet
 import com.example.tweetssearch.util.TweetUtil
 
 class TweetAdapter(
-    private val context: Context,
     private var dataset: List<Tweet> = emptyList(),
     private val onClick: (Tweet) -> Unit
 ) : RecyclerView.Adapter<TweetAdapter.ItemViewHolder>() {
@@ -57,7 +56,7 @@ class TweetAdapter(
                     view.clipToOutline = true
                 }
             }
-            Glide.with(context)
+            Glide.with(holder.view)
                 .load(tweet.user.profile_image_url_https)
                 .centerCrop()
                 .error(R.drawable.no_image)

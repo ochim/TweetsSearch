@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.tweetssearch.model.Token
 import com.example.tweetssearch.model.Tweet
 import com.example.tweetssearch.model.TweetNetworkModelState
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -32,14 +33,18 @@ interface TweetsSearchInterface {
 
 data class SearchResult(val statuses: List<Tweet>?)
 
-class TweetsSearchRepository {
+class TweetsSearchRepository(private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
 
     private val searchInterface: TweetsSearchInterface =
         TwitterRepository.retrofit.create(TweetsSearchInterface::class.java)
 
-    suspend fun tweetsSearch(accessToken: String, q: String, count: Int, state: MutableLiveData<TweetNetworkModelState>)
-                             : List<Tweet>? {
-        return withContext(Dispatchers.IO) {
+    suspend fun tweetsSearch(
+        accessToken: String,
+        q: String,
+        count: Int,
+        state: MutableLiveData<TweetNetworkModelState>
+        ) : List<Tweet>? {
+        return withContext(ioDispatcher) {
             try {
                 //WEB APIから取得する
                 val response = searchInterface
@@ -81,7 +86,7 @@ class TweetsSearchRepository {
         count: Int,
         state: MutableLiveData<TweetNetworkModelState>
     ): List<Tweet>? {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             try {
                 //WEB APIから取得する
                 val response = searchInterface
