@@ -2,13 +2,15 @@ package com.example.tweetssearch.repository
 
 import com.example.tweetssearch.database.Database
 import com.example.tweetssearch.database.KeywordHistory
+import com.example.tweetssearch.database.KeywordHistoryDao
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class KeywordsRepository(private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
-
-    private val dao = Database.db?.keywordHistoryDao()
+class KeywordsRepository(
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val dao: KeywordHistoryDao? = Database.db?.keywordHistoryDao()
+) {
 
     suspend fun getRecentKeywords(): List<String>? {
         return withContext(ioDispatcher) {

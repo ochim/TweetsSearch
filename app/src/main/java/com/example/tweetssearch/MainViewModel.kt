@@ -8,13 +8,21 @@ import com.example.tweetssearch.model.Tweet
 import com.example.tweetssearch.model.TweetNetworkModelState
 import com.example.tweetssearch.repository.AccessTokenRepository
 import com.example.tweetssearch.repository.KeywordsRepository
+import com.example.tweetssearch.repository.TweetsRemoteDataSource
 import com.example.tweetssearch.repository.TweetsSearchRepository
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    private val tweetsSearchRepository: TweetsSearchRepository = TweetsSearchRepository(
+        TweetsRemoteDataSource()
+    ),
+    private val keywordsRepository: KeywordsRepository = KeywordsRepository()
+) : ViewModel() {
+
     val liveTweets: MutableLiveData<List<Tweet>?> = MutableLiveData()
     val liveKeywords: MutableLiveData<List<String>?> = MutableLiveData()
-    val liveState: MutableLiveData<TweetNetworkModelState> = MutableLiveData(TweetNetworkModelState.NeverFetched)
+    val liveState: MutableLiveData<TweetNetworkModelState> =
+        MutableLiveData(TweetNetworkModelState.NeverFetched)
 
     var tempQuery: String? = null
 
@@ -33,14 +41,15 @@ class MainViewModel : ViewModel() {
                 return@launch
             }
 
-            val list = TweetsSearchRepository().tweetsSearch(token, q, FIRST_PAGE_SIZE, liveState)
+            val list =
+                tweetsSearchRepository.tweetsSearch(token, q, FIRST_PAGE_SIZE, liveState, null)
             if (!list.isNullOrEmpty()) {
                 liveTweets.postValue(list)
             }
 
             tempQuery = q
             // キーワード履歴に入れる
-            KeywordsRepository().saveKeyword(q)
+            keywordsRepository.saveKeyword(q)
         }
     }
 
@@ -54,7 +63,7 @@ class MainViewModel : ViewModel() {
 
         viewModelScope.launch {
             val list =
-                TweetsSearchRepository().nextTweetsSearch(token, q, tweet.id, FIRST_PAGE_SIZE, liveState)
+                tweetsSearchRepository.tweetsSearch(token, q, FIRST_PAGE_SIZE, liveState, tweet.id)
             if (list.isNullOrEmpty()) return@launch
 
             val newList = mutableListOf<Tweet>()
@@ -72,7 +81,7 @@ class MainViewModel : ViewModel() {
 
     fun loadKeywordsHistory() {
         viewModelScope.launch {
-            val keywords = KeywordsRepository().getRecentKeywords()
+            val keywords = keywordsRepository.getRecentKeywords()
             liveKeywords.postValue(keywords)
         }
     }
