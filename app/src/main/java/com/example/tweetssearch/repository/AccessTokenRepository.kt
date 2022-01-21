@@ -27,7 +27,11 @@ interface AccessTokenInterface {
 
 data class AccessToken(val token_type: String, val access_token: String)
 
-class AccessTokenRepository(private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
+class AccessTokenRepository(
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val accessTokenInterface: AccessTokenInterface =
+        TwitterRepository.retrofit.create(AccessTokenInterface::class.java)
+) {
 
     suspend fun getAccessToken(): String? {
         return withContext(ioDispatcher) {
@@ -38,8 +42,6 @@ class AccessTokenRepository(private val ioDispatcher: CoroutineDispatcher = Disp
 
             try {
                 //WEB APIから取得する
-                val accessTokenInterface =
-                    TwitterRepository.retrofit.create(AccessTokenInterface::class.java)
                 val response = accessTokenInterface.postAccessToken().execute()
                 if (response.isSuccessful) {
                     val token = response.body()!!

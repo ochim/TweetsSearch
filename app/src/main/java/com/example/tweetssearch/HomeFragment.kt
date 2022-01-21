@@ -115,8 +115,7 @@ class HomeFragment : Fragment() {
                     Toast.makeText(requireActivity(), state.error.message, Toast.LENGTH_SHORT)
                         .show()
                 }
-                else -> {
-                }
+                else -> {}
             }
         })
 

@@ -16,7 +16,8 @@ class MainViewModel(
     private val tweetsSearchRepository: TweetsSearchRepository = TweetsSearchRepository(
         TweetsRemoteDataSource()
     ),
-    private val keywordsRepository: KeywordsRepository = KeywordsRepository()
+    private val keywordsRepository: KeywordsRepository = KeywordsRepository(),
+    private val accessTokenRepository: AccessTokenRepository = AccessTokenRepository()
 ) : ViewModel() {
 
     val liveTweets: MutableLiveData<List<Tweet>?> = MutableLiveData()
@@ -34,17 +35,24 @@ class MainViewModel(
 
         viewModelScope.launch {
 
-            val token = AccessTokenRepository().getAccessToken()
+            val token = accessTokenRepository.getAccessToken()
             if (token.isNullOrEmpty()) {
                 val error = Throwable("authentication error")
                 liveState.postValue(TweetNetworkModelState.FetchedError(error))
                 return@launch
             }
 
-            val list =
-                tweetsSearchRepository.tweetsSearch(token, q, FIRST_PAGE_SIZE, liveState, null)
-            if (!list.isNullOrEmpty()) {
-                liveTweets.postValue(list)
+            try {
+                val list =
+                    tweetsSearchRepository.tweetsSearch(token, q, FIRST_PAGE_SIZE, null)
+                if (!list.isNullOrEmpty()) {
+                    liveState.postValue(TweetNetworkModelState.FetchedOK)
+                    liveTweets.postValue(list)
+                }
+
+            } catch(e: Exception) {
+                liveState.postValue(TweetNetworkModelState.FetchedError(e))
+                liveTweets.postValue(null)
             }
 
             tempQuery = q
@@ -62,8 +70,22 @@ class MainViewModel(
         liveState.value = TweetNetworkModelState.Fetching
 
         viewModelScope.launch {
-            val list =
-                tweetsSearchRepository.tweetsSearch(token, q, FIRST_PAGE_SIZE, liveState, tweet.id)
+            var list: List<Tweet>? = null
+
+            try {
+                list =
+                    tweetsSearchRepository.tweetsSearch(
+                        token,
+                        q,
+                        FIRST_PAGE_SIZE,
+                        tweet.id
+                    )
+                liveState.postValue(TweetNetworkModelState.FetchedOK)
+
+            } catch (e: Exception) {
+                liveState.postValue(TweetNetworkModelState.FetchedError(e))
+            }
+
             if (list.isNullOrEmpty()) return@launch
 
             val newList = mutableListOf<Tweet>()
