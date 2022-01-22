@@ -71,22 +71,9 @@ class HomeFragment : Fragment() {
             keywordAdapter.updateDataSet(keywords)
         })
 
-        val initialTweetsAdapter = TweetAdapter() { editText.clearFocus() }
-        tweetsRecyclerView.adapter = initialTweetsAdapter
+        tweetsRecyclerView.adapter = TweetAdapter() { editText.clearFocus() }
+        tweetsRecyclerView.addOnScrollListener(InfiniteScrollListener(tweetsRecyclerView.adapter!!))
         tweetsRecyclerView.setHasFixedSize(true)
-
-        // fragment_home.xmlで定義済み
-        val manager = tweetsRecyclerView.layoutManager!! as LinearLayoutManager
-
-        class RecyclerViewScrollListener(layoutManager: LinearLayoutManager) :
-            EndlessRecyclerViewScrollListener(layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                Timber.d("page: $page $totalItemsCount")
-                viewModel.nextTweetsSearch()
-            }
-        }
-        // 一番下までスクロールしたら、onLoadMore が実行される
-        tweetsRecyclerView.addOnScrollListener(RecyclerViewScrollListener(manager))
 
         viewModel.liveState.observe(viewLifecycleOwner, { state ->
             when (state) {
@@ -98,7 +85,7 @@ class HomeFragment : Fragment() {
                     loading?.dismiss()
                     loading = null
                     if (state.list.isNotEmpty()) {
-                        initialTweetsAdapter.updateDataSet(state.list)
+                        (tweetsRecyclerView.adapter as TweetAdapter).updateDataSet(state.list)
                         tweetsRecyclerView.setHasFixedSize(true)
                     }
                 }
@@ -154,6 +141,35 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    companion object {
+    /**
+     * リストの下端までスクロールしたタイミングで発火するリスナー
+     */
+    inner class InfiniteScrollListener(private val adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) :
+        RecyclerView.OnScrollListener() {
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+
+            // アダプターが保持しているアイテムの合計
+            val itemCount = adapter.itemCount
+            // 画面に表示されているアイテム数
+            val childCount = recyclerView.childCount
+            val manager = recyclerView.layoutManager as LinearLayoutManager
+            // 画面に表示されている一番上のアイテムの位置
+            val firstPosition = manager.findFirstVisibleItemPosition()
+
+            // 何度もリクエストしないようにロード中は何もしない。
+            if (loading != null && loading!!.showsDialog) {
+                return
+            }
+
+            // 以下の条件に当てはまれば一番下までスクロールされたと判断できる。
+            if (itemCount == childCount + firstPosition) {
+                // 追加読み込みする
+                Timber.d("fetch api more")
+                viewModel.nextTweetsSearch()
+            }
+        }
     }
 }
+
