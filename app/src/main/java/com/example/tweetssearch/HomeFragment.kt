@@ -1,6 +1,7 @@
 package com.example.tweetssearch
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +13,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.tweetssearch.adapter.KeywordAdapter
 import com.example.tweetssearch.adapter.TweetAdapter
 import com.example.tweetssearch.component.LoadingDialog
 import com.example.tweetssearch.databinding.FragmentHomeBinding
 import com.example.tweetssearch.model.TweetNetworkModelState
 import timber.log.Timber
+
 
 /**
  * 開始地点となるフラグメント
@@ -71,6 +74,22 @@ class HomeFragment : Fragment() {
             keywordAdapter.updateDataSet(keywords)
         })
 
+        val swipeRefreshLayout: SwipeRefreshLayout = binding.swipedLayout
+        val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {
+            val text = editText.text.toString()
+            if (text.isNotEmpty()) {
+                // 最新の候補に更新する
+                viewModel.tweetsSearch(text)
+                // 更新マークを非表示にする
+                swipeRefreshLayout.isRefreshing = false
+            }
+        }
+        // 更新時のコールバックをセットする
+        swipeRefreshLayout.setOnRefreshListener(onRefreshListener)
+
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(Color.TRANSPARENT)
+        swipeRefreshLayout.setColorSchemeColors(Color.TRANSPARENT)
+
         tweetsRecyclerView.adapter = TweetAdapter() { editText.clearFocus() }
         tweetsRecyclerView.addOnScrollListener(InfiniteScrollListener(tweetsRecyclerView.adapter!!))
         tweetsRecyclerView.setHasFixedSize(true)
@@ -107,11 +126,13 @@ class HomeFragment : Fragment() {
                 binding.buttonSearch.visibility = View.VISIBLE
                 binding.buttonCancel.visibility = View.VISIBLE
                 tweetsRecyclerView.visibility = View.INVISIBLE
+                swipeRefreshLayout.visibility = View.INVISIBLE
             } else {
                 keywordsRecyclerView.visibility = View.GONE
                 binding.buttonSearch.visibility = View.GONE
                 binding.buttonCancel.visibility = View.GONE
                 tweetsRecyclerView.visibility = View.VISIBLE
+                swipeRefreshLayout.visibility = View.VISIBLE
 
                 // hide the software keyboard
                 val imm =
