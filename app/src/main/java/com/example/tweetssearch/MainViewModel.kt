@@ -1,5 +1,6 @@
 package com.example.tweetssearch
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,25 +21,29 @@ class MainViewModel(
     private val accessTokenRepository: AccessTokenRepository = AccessTokenRepository()
 ) : ViewModel() {
 
-    val liveTweets: MutableLiveData<List<Tweet>?> = MutableLiveData()
-    val liveKeywords: MutableLiveData<List<String>?> = MutableLiveData()
-    val liveState: MutableLiveData<TweetNetworkModelState> =
+    private val mLiveKeywords: MutableLiveData<List<String>?> = MutableLiveData()
+    private val mLiveState: MutableLiveData<TweetNetworkModelState> =
         MutableLiveData(TweetNetworkModelState.NeverFetched)
 
-    var tempQuery: String? = null
+    val liveKeywords: LiveData<List<String>?> get() = mLiveKeywords
+    val liveState: LiveData<TweetNetworkModelState> get() = mLiveState
+
+    private var nowTweets: List<Tweet>? = null
+    private var nowQuery: String? = null
 
     fun tweetsSearch(q: String) {
         // 検索中ならすぐ返す
-        if (liveState.value == TweetNetworkModelState.Fetching) return
+        if (mLiveState.value == TweetNetworkModelState.Fetching) return
 
-        liveState.value = TweetNetworkModelState.Fetching
+        mLiveState.value = TweetNetworkModelState.Fetching
 
         viewModelScope.launch {
 
             val token = accessTokenRepository.getAccessToken()
             if (token.isNullOrEmpty()) {
-                val error = Throwable("authentication error")
-                liveState.postValue(TweetNetworkModelState.FetchedError(error))
+                mLiveState.postValue(
+                    TweetNetworkModelState.FetchedError(Exception("authentication error"))
+                )
                 return@launch
             }
 
@@ -46,28 +51,27 @@ class MainViewModel(
                 val list =
                     tweetsSearchRepository.tweetsSearch(token, q, FIRST_PAGE_SIZE, null)
                 if (!list.isNullOrEmpty()) {
-                    liveState.postValue(TweetNetworkModelState.FetchedOK)
-                    liveTweets.postValue(list)
+                    mLiveState.postValue(TweetNetworkModelState.FetchedOK(list))
+                    nowTweets = list
                 }
 
-            } catch(e: Exception) {
-                liveState.postValue(TweetNetworkModelState.FetchedError(e))
-                liveTweets.postValue(null)
+            } catch (e: Exception) {
+                mLiveState.postValue(TweetNetworkModelState.FetchedError(e))
             }
 
-            tempQuery = q
+            nowQuery = q
             // キーワード履歴に入れる
             keywordsRepository.saveKeyword(q)
         }
     }
 
     fun nextTweetsSearch() {
-        val q = tempQuery ?: return
+        val q = nowQuery ?: return
         val token = Token.accessToken ?: return
-        val tweet = liveTweets.value?.last() ?: return // 現行の最古のツイート
+        val tweet = nowTweets?.last() ?: return // 現行の最古のツイート
 
-        if (liveState.value == TweetNetworkModelState.Fetching) return
-        liveState.value = TweetNetworkModelState.Fetching
+        if (mLiveState.value == TweetNetworkModelState.Fetching) return
+        mLiveState.value = TweetNetworkModelState.Fetching
 
         viewModelScope.launch {
             var list: List<Tweet>? = null
@@ -80,16 +84,14 @@ class MainViewModel(
                         FIRST_PAGE_SIZE,
                         tweet.id
                     )
-                liveState.postValue(TweetNetworkModelState.FetchedOK)
 
             } catch (e: Exception) {
-                liveState.postValue(TweetNetworkModelState.FetchedError(e))
+                mLiveState.postValue(TweetNetworkModelState.FetchedError(e))
             }
 
             if (list.isNullOrEmpty()) return@launch
 
-            val newList = mutableListOf<Tweet>()
-            newList.addAll(liveTweets.value!!)
+            val newList = nowTweets!!.toMutableList()
 
             // 現行の最古のツイートと次候補の先頭のツイートが同じ場合、現行の最古のツイートを消す。
             if (list.first().id == tweet.id) {
@@ -97,14 +99,15 @@ class MainViewModel(
             }
             newList.addAll(list)
 
-            liveTweets.postValue(newList)
+            nowTweets = newList.toList()
+            mLiveState.postValue(TweetNetworkModelState.FetchedOK(newList))
         }
     }
 
     fun loadKeywordsHistory() {
         viewModelScope.launch {
             val keywords = keywordsRepository.getRecentKeywords()
-            liveKeywords.postValue(keywords)
+            mLiveKeywords.postValue(keywords)
         }
     }
 

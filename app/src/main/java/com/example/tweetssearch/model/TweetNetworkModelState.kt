@@ -6,10 +6,13 @@ package com.example.tweetssearch.model
 sealed class TweetNetworkModelState {
     /** まだ読み込みをしていない */
     object NeverFetched : TweetNetworkModelState()
+
     /** 読み込み中 */
     object Fetching : TweetNetworkModelState()
+
     /** 読み込みが終わって正常系 */
-    object FetchedOK : TweetNetworkModelState()
+    class FetchedOK(val list: List<Tweet>) : TweetNetworkModelState()
+
     /** 読み込みが終わってエラー系 */
-    data class FetchedError(val error : Throwable) : TweetNetworkModelState()
+    class FetchedError(val exception: Exception) : TweetNetworkModelState()
 }

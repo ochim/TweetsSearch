@@ -33,10 +33,6 @@ class HomeFragment : Fragment() {
 
     private val viewModel by activityViewModels<MainViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -92,27 +88,24 @@ class HomeFragment : Fragment() {
         // 一番下までスクロールしたら、onLoadMore が実行される
         tweetsRecyclerView.addOnScrollListener(RecyclerViewScrollListener(manager))
 
-        viewModel.liveTweets.observe(viewLifecycleOwner, { tweets ->
-            if (!tweets.isNullOrEmpty()) {
-                initialTweetsAdapter.updateDataSet(tweets)
-                tweetsRecyclerView.setHasFixedSize(true)
-            }
-        })
-
         viewModel.liveState.observe(viewLifecycleOwner, { state ->
             when (state) {
                 is TweetNetworkModelState.Fetching -> {
                     loading = LoadingDialog.newInstance()
-                    loading?.show(parentFragmentManager, "tag")
+                    loading!!.show(parentFragmentManager, "tag")
                 }
                 is TweetNetworkModelState.FetchedOK -> {
                     loading?.dismiss()
                     loading = null
+                    if (state.list.isNotEmpty()) {
+                        initialTweetsAdapter.updateDataSet(state.list)
+                        tweetsRecyclerView.setHasFixedSize(true)
+                    }
                 }
                 is TweetNetworkModelState.FetchedError -> {
                     loading?.dismiss()
                     loading = null
-                    Toast.makeText(requireActivity(), state.error.message, Toast.LENGTH_SHORT)
+                    Toast.makeText(requireActivity(), state.exception.message, Toast.LENGTH_SHORT)
                         .show()
                 }
                 else -> {}
