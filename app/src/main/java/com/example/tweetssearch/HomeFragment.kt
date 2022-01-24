@@ -10,15 +10,24 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.tweetssearch.adapter.KeywordAdapter
 import com.example.tweetssearch.adapter.TweetAdapter
 import com.example.tweetssearch.component.LoadingDialog
+import com.example.tweetssearch.database.Database
 import com.example.tweetssearch.databinding.FragmentHomeBinding
 import com.example.tweetssearch.model.TweetNetworkModelState
+import com.example.tweetssearch.repository.AccessTokenInterface
+import com.example.tweetssearch.repository.AccessTokenRepository
+import com.example.tweetssearch.repository.KeywordsRepository
+import com.example.tweetssearch.repository.TweetsRemoteDataSource
+import com.example.tweetssearch.repository.TweetsSearchInterface
+import com.example.tweetssearch.repository.TweetsSearchRepository
+import com.example.tweetssearch.repository.TwitterRepository
+import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 
 
@@ -34,7 +43,24 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val viewModel by activityViewModels<MainViewModel>()
+    private val viewModel: MainViewModel by viewModels {
+        MainViewModelFactory(
+            TweetsSearchRepository(
+                TweetsRemoteDataSource(
+                    Dispatchers.IO,
+                    TwitterRepository.retrofit.create(TweetsSearchInterface::class.java)
+                )
+            ),
+            KeywordsRepository(
+                Dispatchers.IO,
+                Database.db?.keywordHistoryDao()
+            ),
+            AccessTokenRepository(
+                Dispatchers.IO,
+                TwitterRepository.retrofit.create(AccessTokenInterface::class.java)
+            )
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

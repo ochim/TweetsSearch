@@ -3,6 +3,7 @@ package com.example.tweetssearch
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.tweetssearch.model.Token
 import com.example.tweetssearch.model.Tweet
@@ -113,5 +114,17 @@ class MainViewModel(
 
     companion object {
         const val FIRST_PAGE_SIZE = 15
+    }
+
+}
+
+class MainViewModelFactory(
+    private val tweetsSearchRepository: TweetsSearchRepository,
+    private val keywordsRepository: KeywordsRepository,
+    private val accessTokenRepository: AccessTokenRepository
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return MainViewModel(tweetsSearchRepository, keywordsRepository, accessTokenRepository) as T
     }
 }
