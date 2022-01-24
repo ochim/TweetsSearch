@@ -118,6 +118,21 @@ class HomeFragment : Fragment() {
             }
         })
 
+        fun hideInputShowTweetsUI(view: View) {
+            keywordsRecyclerView.visibility = View.GONE
+            binding.buttonSearch.visibility = View.GONE
+            binding.buttonCancel.visibility = View.GONE
+            tweetsRecyclerView.visibility = View.VISIBLE
+            swipeRefreshLayout.visibility = View.VISIBLE
+
+            // hide the software keyboard
+            val imm =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+            imm?.hideSoftInputFromWindow(
+                view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS
+            )
+        }
+
         editText.onFocusChangeListener = View.OnFocusChangeListener { view1, hasFocus ->
 
             if (hasFocus) {
@@ -128,26 +143,16 @@ class HomeFragment : Fragment() {
                 tweetsRecyclerView.visibility = View.INVISIBLE
                 swipeRefreshLayout.visibility = View.INVISIBLE
             } else {
-                keywordsRecyclerView.visibility = View.GONE
-                binding.buttonSearch.visibility = View.GONE
-                binding.buttonCancel.visibility = View.GONE
-                tweetsRecyclerView.visibility = View.VISIBLE
-                swipeRefreshLayout.visibility = View.VISIBLE
-
-                // hide the software keyboard
-                val imm =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-                imm?.hideSoftInputFromWindow(
-                    view1?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS
-                )
+                hideInputShowTweetsUI(view1)
             }
         }
 
         editText.setOnEditorActionListener { textView, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (textView.text.isNotEmpty()) {
-                    viewModel.tweetsSearch(textView.text.toString())
                     editText.clearFocus()
+                    hideInputShowTweetsUI(textView)
+                    viewModel.tweetsSearch(textView.text.toString())
                 }
                 return@setOnEditorActionListener true
             }
