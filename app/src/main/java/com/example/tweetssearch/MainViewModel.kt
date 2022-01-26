@@ -23,11 +23,11 @@ class MainViewModel(
 ) : ViewModel() {
 
     private val mLiveKeywords: MutableLiveData<List<String>?> = MutableLiveData()
-    private val mLiveState: MutableLiveData<TweetNetworkModelState> =
+    private val mLiveState: MutableLiveData<TweetNetworkModelState<List<Tweet>>> =
         MutableLiveData(TweetNetworkModelState.NeverFetched)
 
     val liveKeywords: LiveData<List<String>?> get() = mLiveKeywords
-    val liveState: LiveData<TweetNetworkModelState> get() = mLiveState
+    val liveState: LiveData<TweetNetworkModelState<List<Tweet>>> get() = mLiveState
 
     private var nowTweets: List<Tweet>? = null
     private var nowQuery: String? = null
