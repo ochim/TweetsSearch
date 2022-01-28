@@ -50,9 +50,6 @@ class TweetsRemoteDataSource(
                     .execute()
                 if (response.isSuccessful) {
                     val result = response.body()!!
-                    if (result.statuses.isNullOrEmpty()) {
-                        throw Exception("empty")
-                    }
                     result.statuses
 
                 } else {
@@ -60,7 +57,7 @@ class TweetsRemoteDataSource(
                         // アクセストークンが無効なので消す
                         Token.accessToken = null
                     }
-                    throw Exception("error code ${response.code()}")
+                    throw Exception("error code ${response.code()} ${response.message()}")
                 }
 
             } else {
@@ -76,7 +73,7 @@ class TweetsRemoteDataSource(
                         // アクセストークンが無効なので消す
                         Token.accessToken = null
                     }
-                    throw Exception("error code ${response.code()}")
+                    throw Exception("error code ${response.code()} ${response.message()}")
                 }
 
             }

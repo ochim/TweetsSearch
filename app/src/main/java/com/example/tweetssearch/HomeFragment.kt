@@ -137,7 +137,7 @@ class HomeFragment : Fragment() {
                 is TweetNetworkModelState.FetchedError -> {
                     loading?.dismiss()
                     loading = null
-                    Toast.makeText(requireActivity(), state.exception.message, Toast.LENGTH_SHORT)
+                    Toast.makeText(requireActivity(), state.exception.message, Toast.LENGTH_LONG)
                         .show()
                 }
                 else -> {}

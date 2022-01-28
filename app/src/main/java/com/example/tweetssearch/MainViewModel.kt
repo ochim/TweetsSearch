@@ -54,6 +54,8 @@ class MainViewModel(
                 if (!list.isNullOrEmpty()) {
                     mLiveState.postValue(TweetNetworkModelState.FetchedOK(list))
                     nowTweets = list
+                } else {
+                    mLiveState.postValue(TweetNetworkModelState.FetchedError(Exception("empty")))
                 }
 
             } catch (e: Exception) {
@@ -88,9 +90,13 @@ class MainViewModel(
 
             } catch (e: Exception) {
                 mLiveState.postValue(TweetNetworkModelState.FetchedError(e))
+                return@launch
             }
 
-            if (list.isNullOrEmpty()) return@launch
+            if (list.isNullOrEmpty()) {
+                mLiveState.postValue(TweetNetworkModelState.FetchedOK(emptyList()))
+                return@launch
+            }
 
             val newList = nowTweets!!.toMutableList()
 
