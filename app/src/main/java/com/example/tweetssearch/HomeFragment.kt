@@ -11,6 +11,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -19,7 +22,6 @@ import com.example.tweetssearch.adapter.TweetAdapter
 import com.example.tweetssearch.component.LoadingDialog
 import com.example.tweetssearch.database.Database
 import com.example.tweetssearch.databinding.FragmentHomeBinding
-import com.example.tweetssearch.model.TweetNetworkModelState
 import com.example.tweetssearch.repository.AccessTokenInterface
 import com.example.tweetssearch.repository.AccessTokenRepository
 import com.example.tweetssearch.repository.KeywordsRepository
@@ -28,6 +30,8 @@ import com.example.tweetssearch.repository.TweetsSearchInterface
 import com.example.tweetssearch.repository.TweetsSearchRepository
 import com.example.tweetssearch.repository.TwitterRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
@@ -95,11 +99,6 @@ class HomeFragment : Fragment() {
         }
         keywordsRecyclerView.adapter = keywordAdapter
 
-        viewModel.liveKeywords.observe(viewLifecycleOwner, { keywords ->
-            if (keywords.isNullOrEmpty()) return@observe
-            keywordAdapter.updateDataSet(keywords)
-        })
-
         val swipeRefreshLayout: SwipeRefreshLayout = binding.swipedLayout
         val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {
             val text = editText.text.toString()
@@ -120,29 +119,49 @@ class HomeFragment : Fragment() {
         tweetsRecyclerView.addOnScrollListener(InfiniteScrollListener(tweetsRecyclerView.adapter!!))
         tweetsRecyclerView.setHasFixedSize(true)
 
-        viewModel.liveState.observe(viewLifecycleOwner, { state ->
-            when (state) {
-                is TweetNetworkModelState.Fetching -> {
-                    loading = LoadingDialog.newInstance()
-                    loading!!.show(parentFragmentManager, "tag")
-                }
-                is TweetNetworkModelState.FetchedOK -> {
-                    loading?.dismiss()
-                    loading = null
-                    if (state.data.isNotEmpty()) {
-                        (tweetsRecyclerView.adapter as TweetAdapter).updateDataSet(state.data)
-                        tweetsRecyclerView.setHasFixedSize(true)
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    when (state.fetchState) {
+                        FetchState.FETCHING -> {
+                            loading = LoadingDialog.newInstance()
+                            loading!!.show(parentFragmentManager, "tag")
+                        }
+                        FetchState.FETCHED_OK -> {
+                            loading?.dismiss()
+                            loading = null
+                            if (state.tweetsItems.isNotEmpty()) {
+                                (tweetsRecyclerView.adapter as TweetAdapter).updateDataSet(state.tweetsItems)
+                                tweetsRecyclerView.setHasFixedSize(true)
+                            }
+                        }
+                        FetchState.FETCHED_ERROR -> {
+                            loading?.dismiss()
+                            loading = null
+                            Toast.makeText(
+                                requireActivity(),
+                                state.userMessage,
+                                Toast.LENGTH_LONG
+                            )
+                                .show()
+                        }
+                        else -> {
+                        }
                     }
                 }
-                is TweetNetworkModelState.FetchedError -> {
-                    loading?.dismiss()
-                    loading = null
-                    Toast.makeText(requireActivity(), state.exception.message, Toast.LENGTH_LONG)
-                        .show()
-                }
-                else -> {}
+
             }
-        })
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.keywordsState.collect {
+                    if (it.keywordsItems.isNotEmpty()) {
+                        keywordAdapter.updateDataSet(it.keywordsItems)
+                    }
+                }
+            }
+        }
 
         fun hideInputShowTweetsUI(view: View) {
             keywordsRecyclerView.visibility = View.GONE
