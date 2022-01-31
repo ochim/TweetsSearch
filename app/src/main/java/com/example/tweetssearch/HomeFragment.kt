@@ -121,43 +121,41 @@ class HomeFragment : Fragment() {
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    when (state.fetchState) {
-                        FetchState.FETCHING -> {
-                            loading = LoadingDialog.newInstance()
-                            loading!!.show(parentFragmentManager, "tag")
-                        }
-                        FetchState.FETCHED_OK -> {
-                            loading?.dismiss()
-                            loading = null
-                            if (state.tweetsItems.isNotEmpty()) {
-                                (tweetsRecyclerView.adapter as TweetAdapter).updateDataSet(state.tweetsItems)
-                                tweetsRecyclerView.setHasFixedSize(true)
+                launch {
+                    viewModel.uiState.collect { state ->
+                        when (state.fetchState) {
+                            FetchState.FETCHING -> {
+                                loading = LoadingDialog.newInstance()
+                                loading!!.show(parentFragmentManager, "tag")
                             }
-                        }
-                        FetchState.FETCHED_ERROR -> {
-                            loading?.dismiss()
-                            loading = null
-                            Toast.makeText(
-                                requireActivity(),
-                                state.userMessage,
-                                Toast.LENGTH_LONG
-                            )
-                                .show()
-                        }
-                        else -> {
+                            FetchState.FETCHED_OK -> {
+                                loading?.dismiss()
+                                loading = null
+                                if (state.tweetsItems.isNotEmpty()) {
+                                    (tweetsRecyclerView.adapter as TweetAdapter).updateDataSet(state.tweetsItems)
+                                    tweetsRecyclerView.setHasFixedSize(true)
+                                }
+                            }
+                            FetchState.FETCHED_ERROR -> {
+                                loading?.dismiss()
+                                loading = null
+                                Toast.makeText(
+                                    requireActivity(),
+                                    state.userMessage,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                            else -> {
+                            }
                         }
                     }
                 }
 
-            }
-        }
-
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.keywordsState.collect {
-                    if (it.keywordsItems.isNotEmpty()) {
-                        keywordAdapter.updateDataSet(it.keywordsItems)
+                launch {
+                    viewModel.keywordsState.collect {
+                        if (it.keywordsItems.isNotEmpty()) {
+                            keywordAdapter.updateDataSet(it.keywordsItems)
+                        }
                     }
                 }
             }
