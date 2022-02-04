@@ -63,7 +63,7 @@ dependencies {
     testImplementation 'androidx.test.ext:truth:1.4.0'
 
     // Navigation
-    def nav_version = "2.3.5"
+    def nav_version = "2.4.0"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     // Feature module Support
@@ -81,7 +81,7 @@ dependencies {
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     // Fragment ktx
-    implementation "androidx.fragment:fragment-ktx:1.4.0"
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
 
     // Retrofit
     def retrofit_version = "2.9.0"
