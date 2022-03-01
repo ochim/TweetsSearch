@@ -40,15 +40,15 @@ class MainViewModel(
 
         viewModelScope.launch {
 
-            val token = accessTokenRepository.getAccessToken()
-            if (token.isNullOrEmpty()) {
-                mLiveState.postValue(
-                    TweetNetworkModelState.FetchedError(Exception("authentication error"))
-                )
-                return@launch
-            }
-
             try {
+                val token = accessTokenRepository.getAccessToken()
+                if (token.isNullOrEmpty()) {
+                    mLiveState.postValue(
+                        TweetNetworkModelState.FetchedError(Exception("authentication error"))
+                    )
+                    return@launch
+                }
+
                 val list =
                     tweetsSearchRepository.tweetsSearch(token, q, FIRST_PAGE_SIZE, null)
                 if (!list.isNullOrEmpty()) {

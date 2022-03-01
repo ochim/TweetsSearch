@@ -40,20 +40,14 @@ class AccessTokenRepository(
                 return@withContext Token.accessToken
             }
 
-            try {
-                //WEB APIから取得する
-                val response = accessTokenInterface.postAccessToken().execute()
-                if (response.isSuccessful) {
-                    val token = response.body()!!
-                    Token.accessToken = token.access_token
-                    token.access_token
-                } else {
-                    null
-                }
-
-            } catch (ex: Exception) {
-                Timber.e(ex.toString())
-                null
+            //WEB APIから取得する
+            val response = accessTokenInterface.postAccessToken().execute()
+            if (response.isSuccessful) {
+                val token = response.body()!!
+                Token.accessToken = token.access_token
+                token.access_token
+            } else {
+                throw Exception("AccessToken error code ${response.code()} ${response.message()}")
             }
 
         }

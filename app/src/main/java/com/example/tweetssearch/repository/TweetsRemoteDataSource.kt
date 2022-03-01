@@ -57,7 +57,7 @@ class TweetsRemoteDataSource(
                         // アクセストークンが無効なので消す
                         Token.accessToken = null
                     }
-                    throw Exception("error code ${response.code()} ${response.message()}")
+                    throw Exception("TweetsSearch error code ${response.code()} ${response.message()}")
                 }
 
             } else {
@@ -73,7 +73,7 @@ class TweetsRemoteDataSource(
                         // アクセストークンが無効なので消す
                         Token.accessToken = null
                     }
-                    throw Exception("error code ${response.code()} ${response.message()}")
+                    throw Exception("NextTweetsSearch error code ${response.code()} ${response.message()}")
                 }
 
             }
