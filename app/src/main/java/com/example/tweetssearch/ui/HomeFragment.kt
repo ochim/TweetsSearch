@@ -1,4 +1,4 @@
-package com.example.tweetssearch
+package com.example.tweetssearch.ui
 
 import android.content.Context
 import android.graphics.Color
@@ -14,19 +14,19 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.tweetssearch.adapter.KeywordAdapter
-import com.example.tweetssearch.adapter.TweetAdapter
-import com.example.tweetssearch.component.LoadingDialog
-import com.example.tweetssearch.database.Database
+import com.example.tweetssearch.ui.adapter.KeywordAdapter
+import com.example.tweetssearch.ui.adapter.TweetAdapter
+import com.example.tweetssearch.ui.component.LoadingDialog
+import com.example.tweetssearch.data.database.Database
 import com.example.tweetssearch.databinding.FragmentHomeBinding
 import com.example.tweetssearch.model.TweetNetworkModelState
-import com.example.tweetssearch.repository.AccessTokenInterface
-import com.example.tweetssearch.repository.AccessTokenRepository
-import com.example.tweetssearch.repository.KeywordsRepository
-import com.example.tweetssearch.repository.TweetsRemoteDataSource
-import com.example.tweetssearch.repository.TweetsSearchInterface
-import com.example.tweetssearch.repository.TweetsSearchRepository
-import com.example.tweetssearch.repository.TwitterRepository
+import com.example.tweetssearch.data.repository.AccessTokenInterface
+import com.example.tweetssearch.data.repository.AccessTokenRepository
+import com.example.tweetssearch.data.repository.KeywordsRepository
+import com.example.tweetssearch.data.repository.TweetsRemoteDataSource
+import com.example.tweetssearch.data.repository.TweetsSearchInterface
+import com.example.tweetssearch.data.repository.TweetsSearchRepository
+import com.example.tweetssearch.data.repository.TwitterRepository
 import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 
@@ -57,7 +57,8 @@ class HomeFragment : Fragment() {
             ),
             AccessTokenRepository(
                 Dispatchers.IO,
-                TwitterRepository.retrofit.create(AccessTokenInterface::class.java)
+                TwitterRepository.retrofit.create(AccessTokenInterface::class.java),
+                requireContext()
             )
         )
     }
@@ -95,10 +96,10 @@ class HomeFragment : Fragment() {
         }
         keywordsRecyclerView.adapter = keywordAdapter
 
-        viewModel.liveKeywords.observe(viewLifecycleOwner, { keywords ->
+        viewModel.liveKeywords.observe(viewLifecycleOwner) { keywords ->
             if (keywords.isNullOrEmpty()) return@observe
             keywordAdapter.updateDataSet(keywords)
-        })
+        }
 
         val swipeRefreshLayout: SwipeRefreshLayout = binding.swipedLayout
         val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {
@@ -120,7 +121,7 @@ class HomeFragment : Fragment() {
         tweetsRecyclerView.addOnScrollListener(InfiniteScrollListener(tweetsRecyclerView.adapter!!))
         tweetsRecyclerView.setHasFixedSize(true)
 
-        viewModel.liveState.observe(viewLifecycleOwner, { state ->
+        viewModel.liveState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is TweetNetworkModelState.Fetching -> {
                     loading = LoadingDialog.newInstance()
@@ -142,7 +143,7 @@ class HomeFragment : Fragment() {
                 }
                 else -> {}
             }
-        })
+        }
 
         fun hideInputShowTweetsUI(view: View) {
             keywordsRecyclerView.visibility = View.GONE

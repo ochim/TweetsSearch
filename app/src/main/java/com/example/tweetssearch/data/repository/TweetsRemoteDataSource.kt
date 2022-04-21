@@ -1,6 +1,5 @@
-package com.example.tweetssearch.repository
+package com.example.tweetssearch.data.repository
 
-import com.example.tweetssearch.model.Token
 import com.example.tweetssearch.model.Tweet
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -37,12 +36,17 @@ class TweetsRemoteDataSource(
 ) {
 
     suspend fun tweetsSearch(
-        accessToken: String,
         q: String,
         count: Int,
         max_id: Long?,
+        accessTokenRepository: AccessTokenRepository
     ): List<Tweet>? {
         return withContext(ioDispatcher) {
+            val accessToken = accessTokenRepository.getAccessToken()
+            if (accessToken.isNullOrEmpty()) {
+                throw Exception("accessToken error")
+            }
+
             if (max_id == null) {
                 //WEB APIから取得する
                 val response = searchInterface
@@ -55,7 +59,7 @@ class TweetsRemoteDataSource(
                 } else {
                     if (response.code() == 401) {
                         // アクセストークンが無効なので消す
-                        Token.accessToken = null
+                        accessTokenRepository.clear()
                     }
                     throw Exception("TweetsSearch error code ${response.code()} ${response.message()}")
                 }
@@ -71,7 +75,7 @@ class TweetsRemoteDataSource(
                 } else {
                     if (response.code() == 401) {
                         // アクセストークンが無効なので消す
-                        Token.accessToken = null
+                        accessTokenRepository.clear()
                     }
                     throw Exception("NextTweetsSearch error code ${response.code()} ${response.message()}")
                 }

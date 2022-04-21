@@ -1,4 +1,4 @@
-package com.example.tweetssearch.database
+package com.example.tweetssearch.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

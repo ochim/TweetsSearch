@@ -1,9 +1,12 @@
 package com.example.tweetssearch
 
 import android.app.Application
-import com.chibatching.kotpref.Kotpref
-import com.example.tweetssearch.database.Database
+import android.content.Context
+import androidx.datastore.preferences.preferencesDataStore
+import com.example.tweetssearch.data.database.Database
 import timber.log.Timber
+
+val Context.dataStore by preferencesDataStore(name = "settings")
 
 class MainApplication: Application() {
 
@@ -15,7 +18,6 @@ class MainApplication: Application() {
             Timber.plant(CrashReportingTree())
         }
 
-        Kotpref.init(applicationContext)
         Database.setDb(applicationContext)
     }
 
