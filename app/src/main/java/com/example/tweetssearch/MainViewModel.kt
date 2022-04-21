@@ -5,21 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.tweetssearch.model.Token
 import com.example.tweetssearch.model.Tweet
 import com.example.tweetssearch.model.TweetNetworkModelState
 import com.example.tweetssearch.repository.AccessTokenRepository
 import com.example.tweetssearch.repository.KeywordsRepository
-import com.example.tweetssearch.repository.TweetsRemoteDataSource
 import com.example.tweetssearch.repository.TweetsSearchRepository
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val tweetsSearchRepository: TweetsSearchRepository = TweetsSearchRepository(
-        TweetsRemoteDataSource()
-    ),
+    private val tweetsSearchRepository: TweetsSearchRepository,
     private val keywordsRepository: KeywordsRepository = KeywordsRepository(),
-    private val accessTokenRepository: AccessTokenRepository = AccessTokenRepository()
+    private val accessTokenRepository: AccessTokenRepository
 ) : ViewModel() {
 
     private val mLiveKeywords: MutableLiveData<List<String>?> = MutableLiveData()
@@ -39,18 +35,14 @@ class MainViewModel(
         mLiveState.value = TweetNetworkModelState.Fetching
 
         viewModelScope.launch {
-
             try {
-                val token = accessTokenRepository.getAccessToken()
-                if (token.isNullOrEmpty()) {
-                    mLiveState.postValue(
-                        TweetNetworkModelState.FetchedError(Exception("authentication error"))
-                    )
-                    return@launch
-                }
-
                 val list =
-                    tweetsSearchRepository.tweetsSearch(token, q, FIRST_PAGE_SIZE, null)
+                    tweetsSearchRepository.tweetsSearch(
+                        q,
+                        FIRST_PAGE_SIZE,
+                        null,
+                        accessTokenRepository
+                    )
                 if (!list.isNullOrEmpty()) {
                     mLiveState.postValue(TweetNetworkModelState.FetchedOK(list))
                     nowTweets = list
@@ -70,7 +62,6 @@ class MainViewModel(
 
     fun nextTweetsSearch() {
         val q = nowQuery ?: return
-        val token = Token.accessToken ?: return
         val tweet = nowTweets?.last() ?: return // 現行の最古のツイート
 
         if (mLiveState.value == TweetNetworkModelState.Fetching) return
@@ -82,10 +73,10 @@ class MainViewModel(
             try {
                 list =
                     tweetsSearchRepository.tweetsSearch(
-                        token,
                         q,
                         FIRST_PAGE_SIZE,
-                        tweet.id
+                        tweet.id,
+                        accessTokenRepository
                     )
 
             } catch (e: Exception) {

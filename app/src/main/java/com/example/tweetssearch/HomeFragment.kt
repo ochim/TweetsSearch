@@ -57,7 +57,8 @@ class HomeFragment : Fragment() {
             ),
             AccessTokenRepository(
                 Dispatchers.IO,
-                TwitterRepository.retrofit.create(AccessTokenInterface::class.java)
+                TwitterRepository.retrofit.create(AccessTokenInterface::class.java),
+                requireContext()
             )
         )
     }
@@ -95,10 +96,10 @@ class HomeFragment : Fragment() {
         }
         keywordsRecyclerView.adapter = keywordAdapter
 
-        viewModel.liveKeywords.observe(viewLifecycleOwner, { keywords ->
+        viewModel.liveKeywords.observe(viewLifecycleOwner) { keywords ->
             if (keywords.isNullOrEmpty()) return@observe
             keywordAdapter.updateDataSet(keywords)
-        })
+        }
 
         val swipeRefreshLayout: SwipeRefreshLayout = binding.swipedLayout
         val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {
@@ -120,7 +121,7 @@ class HomeFragment : Fragment() {
         tweetsRecyclerView.addOnScrollListener(InfiniteScrollListener(tweetsRecyclerView.adapter!!))
         tweetsRecyclerView.setHasFixedSize(true)
 
-        viewModel.liveState.observe(viewLifecycleOwner, { state ->
+        viewModel.liveState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is TweetNetworkModelState.Fetching -> {
                     loading = LoadingDialog.newInstance()
@@ -142,7 +143,7 @@ class HomeFragment : Fragment() {
                 }
                 else -> {}
             }
-        })
+        }
 
         fun hideInputShowTweetsUI(view: View) {
             keywordsRecyclerView.visibility = View.GONE

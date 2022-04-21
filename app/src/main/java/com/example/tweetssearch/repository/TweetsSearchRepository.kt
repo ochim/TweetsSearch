@@ -7,11 +7,11 @@ class TweetsSearchRepository(
     ) {
 
     suspend fun tweetsSearch(
-        accessToken: String,
         q: String,
         count: Int,
         max_id: Long?,
-        ) : List<Tweet>? {
-        return tweetsRemoteDataSource.tweetsSearch(accessToken, q, count, max_id)
+        accessTokenRepository: AccessTokenRepository
+    ) : List<Tweet>? {
+        return tweetsRemoteDataSource.tweetsSearch(q, count, max_id, accessTokenRepository)
     }
 }

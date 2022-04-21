@@ -115,6 +115,9 @@ dependencies {
     // swipe refresh
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
+    // Preferences DataStore (SharedPreferences like APIs)
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
     // debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }
