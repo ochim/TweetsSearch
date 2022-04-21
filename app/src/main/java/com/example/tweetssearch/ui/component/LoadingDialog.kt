@@ -1,4 +1,4 @@
-package com.example.tweetssearch.component
+package com.example.tweetssearch.ui.component
 
 import android.app.AlertDialog
 import android.app.Dialog

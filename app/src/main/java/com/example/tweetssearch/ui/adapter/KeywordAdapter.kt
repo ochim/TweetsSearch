@@ -1,4 +1,4 @@
-package com.example.tweetssearch.adapter
+package com.example.tweetssearch.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View

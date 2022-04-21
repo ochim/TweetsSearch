@@ -1,4 +1,4 @@
-package com.example.tweetssearch.database
+package com.example.tweetssearch.data.database
 
 import androidx.room.Dao
 import androidx.room.Delete

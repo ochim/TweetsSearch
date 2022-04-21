@@ -1,4 +1,4 @@
-package com.example.tweetssearch.repository
+package com.example.tweetssearch.data.repository
 
 import com.example.tweetssearch.model.Tweet
 

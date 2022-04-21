@@ -1,4 +1,4 @@
-package com.example.tweetssearch
+package com.example.tweetssearch.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.tweetssearch.model.Tweet
 import com.example.tweetssearch.model.TweetNetworkModelState
-import com.example.tweetssearch.repository.AccessTokenRepository
-import com.example.tweetssearch.repository.KeywordsRepository
-import com.example.tweetssearch.repository.TweetsSearchRepository
+import com.example.tweetssearch.data.repository.AccessTokenRepository
+import com.example.tweetssearch.data.repository.KeywordsRepository
+import com.example.tweetssearch.data.repository.TweetsSearchRepository
 import kotlinx.coroutines.launch
 
 class MainViewModel(

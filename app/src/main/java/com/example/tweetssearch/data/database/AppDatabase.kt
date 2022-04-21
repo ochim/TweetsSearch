@@ -1,4 +1,4 @@
-package com.example.tweetssearch.database
+package com.example.tweetssearch.data.database
 
 import android.content.Context
 import androidx.room.Database

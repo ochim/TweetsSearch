@@ -1,4 +1,4 @@
-package com.example.tweetssearch.repository
+package com.example.tweetssearch.data.repository
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

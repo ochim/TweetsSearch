@@ -1,8 +1,8 @@
-package com.example.tweetssearch.repository
+package com.example.tweetssearch.data.repository
 
-import com.example.tweetssearch.database.Database
-import com.example.tweetssearch.database.KeywordHistory
-import com.example.tweetssearch.database.KeywordHistoryDao
+import com.example.tweetssearch.data.database.Database
+import com.example.tweetssearch.data.database.KeywordHistory
+import com.example.tweetssearch.data.database.KeywordHistoryDao
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

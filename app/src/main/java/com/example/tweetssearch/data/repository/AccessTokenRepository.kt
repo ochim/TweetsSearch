@@ -1,4 +1,4 @@
-package com.example.tweetssearch.repository
+package com.example.tweetssearch.data.repository
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit

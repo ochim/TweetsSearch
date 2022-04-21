@@ -1,12 +1,12 @@
-package com.example.tweetssearch.repository
+package com.example.tweetssearch.data.repository
 
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.tweetssearch.database.AppDatabase
-import com.example.tweetssearch.database.KeywordHistory
-import com.example.tweetssearch.database.KeywordHistoryDao
+import com.example.tweetssearch.data.database.AppDatabase
+import com.example.tweetssearch.data.database.KeywordHistory
+import com.example.tweetssearch.data.database.KeywordHistoryDao
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
