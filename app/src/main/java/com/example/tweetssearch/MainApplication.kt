@@ -3,7 +3,6 @@ package com.example.tweetssearch
 import android.app.Application
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
-import com.chibatching.kotpref.Kotpref
 import com.example.tweetssearch.database.Database
 import timber.log.Timber
 
@@ -19,7 +18,6 @@ class MainApplication: Application() {
             Timber.plant(CrashReportingTree())
         }
 
-        Kotpref.init(applicationContext)
         Database.setDb(applicationContext)
     }
 

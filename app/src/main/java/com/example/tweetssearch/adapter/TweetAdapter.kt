@@ -1,6 +1,5 @@
 package com.example.tweetssearch.adapter
 
-import android.content.Context
 import android.graphics.Outline
 import android.view.LayoutInflater
 import android.view.View
