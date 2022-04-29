@@ -1,17 +1,13 @@
 package com.example.tweetssearch.ui.adapter
 
-import android.graphics.Outline
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewOutlineProvider
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.compose.ui.platform.ComposeView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.tweetssearch.R
 import com.example.tweetssearch.model.Tweet
-import com.example.tweetssearch.util.TweetUtil
+import com.example.tweetssearch.ui.TweetCell
 
 class TweetAdapter(
     private var dataset: List<Tweet> = emptyList(),
@@ -19,10 +15,7 @@ class TweetAdapter(
 ) : RecyclerView.Adapter<TweetAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val textView: TextView = view.findViewById(R.id.tv_text)
-        val createdAtView: TextView = view.findViewById(R.id.tv_created_at)
-        val nameView: TextView = view.findViewById(R.id.tv_user_name)
-        val profileImageView: ImageView = view.findViewById(R.id.iv_profile_image)
+        val tweetCell: ComposeView = view.findViewById(R.id.tweet_cell)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -34,33 +27,10 @@ class TweetAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val tweet = dataset[position]
-        holder.nameView.text = "${tweet.user.name}  @${tweet.user.screen_name}"
-        holder.textView.text = tweet.text
-        holder.createdAtView.text = TweetUtil().convertCreatedAt(tweet.createdAt)
-        holder.view.setOnClickListener { onClick(tweet) }
-
-        if (!tweet.user.profile_image_url_https.isNullOrEmpty()) {
-            // 角を丸くする
-            holder.profileImageView.outlineProvider = object : ViewOutlineProvider() {
-
-                override fun getOutline(view: View?, outline: Outline?) {
-                    view ?: return
-                    outline?.setRoundRect(
-                        0,
-                        0,
-                        view.width,
-                        view.height,
-                        16F
-                    )
-                    view.clipToOutline = true
-                }
-            }
-            Glide.with(holder.view)
-                .load(tweet.user.profile_image_url_https)
-                .centerCrop()
-                .error(R.drawable.no_image)
-                .into(holder.profileImageView)
+        holder.tweetCell.setContent { 
+            TweetCell(tweet)
         }
+        holder.view.setOnClickListener { onClick(tweet) }
     }
 
     override fun getItemCount() = dataset.size
