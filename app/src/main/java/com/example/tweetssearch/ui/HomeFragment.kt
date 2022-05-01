@@ -9,17 +9,13 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.tweetssearch.ui.adapter.KeywordAdapter
-import com.example.tweetssearch.ui.adapter.TweetAdapter
-import com.example.tweetssearch.ui.component.LoadingDialog
 import com.example.tweetssearch.data.database.Database
-import com.example.tweetssearch.databinding.FragmentHomeBinding
-import com.example.tweetssearch.model.TweetNetworkModelState
 import com.example.tweetssearch.data.repository.AccessTokenInterface
 import com.example.tweetssearch.data.repository.AccessTokenRepository
 import com.example.tweetssearch.data.repository.KeywordsRepository
@@ -27,6 +23,10 @@ import com.example.tweetssearch.data.repository.TweetsRemoteDataSource
 import com.example.tweetssearch.data.repository.TweetsSearchInterface
 import com.example.tweetssearch.data.repository.TweetsSearchRepository
 import com.example.tweetssearch.data.repository.TwitterRepository
+import com.example.tweetssearch.databinding.FragmentHomeBinding
+import com.example.tweetssearch.model.TweetNetworkModelState
+import com.example.tweetssearch.ui.adapter.TweetAdapter
+import com.example.tweetssearch.ui.component.LoadingDialog
 import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 
@@ -74,7 +74,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val keywordsRecyclerView = binding.recyclerKeywords
+        val keywordsRecyclerView: ComposeView = binding.recyclerKeywords
         val tweetsRecyclerView = binding.recyclerTweets
         val editText = binding.textInputEditText
 
@@ -89,16 +89,14 @@ class HomeFragment : Fragment() {
 
         binding.buttonCancel.setOnClickListener { editText.clearFocus() }
 
-        val keywordAdapter = KeywordAdapter() { keyword ->
+        val keywordClick: (String) -> Unit = { keyword ->
             viewModel.tweetsSearch(keyword)
             editText.clearFocus()
             editText.setText(keyword)
         }
-        keywordsRecyclerView.adapter = keywordAdapter
 
-        viewModel.liveKeywords.observe(viewLifecycleOwner) { keywords ->
-            if (keywords.isNullOrEmpty()) return@observe
-            keywordAdapter.updateDataSet(keywords)
+        keywordsRecyclerView.setContent {
+            KeywordsList(keywords = viewModel.keywordsState, onItemClick = keywordClick)
         }
 
         val swipeRefreshLayout: SwipeRefreshLayout = binding.swipedLayout

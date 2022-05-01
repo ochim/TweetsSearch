@@ -44,13 +44,12 @@
         app:layout_constraintEnd_toStartOf="@+id/button_cancel"
         app:layout_constraintTop_toBottomOf="@+id/text_input_layout" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.compose.ui.platform.ComposeView
         android:id="@+id/recycler_keywords"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
         android:visibility="gone"
-        app:layoutManager="LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_cancel" />
