@@ -1,15 +1,18 @@
 package com.example.tweetssearch.ui
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.tweetssearch.model.Tweet
-import com.example.tweetssearch.model.TweetNetworkModelState
 import com.example.tweetssearch.data.repository.AccessTokenRepository
 import com.example.tweetssearch.data.repository.KeywordsRepository
 import com.example.tweetssearch.data.repository.TweetsSearchRepository
+import com.example.tweetssearch.model.Tweet
+import com.example.tweetssearch.model.TweetNetworkModelState
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -18,12 +21,12 @@ class MainViewModel(
     private val accessTokenRepository: AccessTokenRepository
 ) : ViewModel() {
 
-    private val mLiveKeywords: MutableLiveData<List<String>?> = MutableLiveData()
     private val mLiveState: MutableLiveData<TweetNetworkModelState<List<Tweet>>> =
         MutableLiveData(TweetNetworkModelState.NeverFetched)
-
-    val liveKeywords: LiveData<List<String>?> get() = mLiveKeywords
     val liveState: LiveData<TweetNetworkModelState<List<Tweet>>> get() = mLiveState
+
+    var keywordsState by mutableStateOf<List<String>>(emptyList())
+        private set
 
     private var nowTweets: List<Tweet>? = null
     private var nowQuery: String? = null
@@ -105,7 +108,7 @@ class MainViewModel(
     fun loadKeywordsHistory() {
         viewModelScope.launch {
             val keywords = keywordsRepository.getRecentKeywords()
-            mLiveKeywords.postValue(keywords)
+            if (!keywords.isNullOrEmpty()) keywordsState = keywords
         }
     }
 

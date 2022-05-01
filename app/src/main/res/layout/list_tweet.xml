@@ -1,62 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/tweet_cell"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" />
 
-        <ImageView
-            android:id="@+id/iv_profile_image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:contentDescription="thumbnail"
-            android:scaleType="centerCrop"
-            app:layout_constraintEnd_toStartOf="@+id/tv_user_name"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/no_image" />
-
-        <TextView
-            android:id="@+id/tv_user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:paddingTop="0dp"
-            android:paddingEnd="0dp"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constraintStart_toEndOf="@+id/iv_profile_image"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="hogehoge" />
-
-        <TextView
-            android:id="@+id/tv_created_at"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:paddingTop="4dp"
-            android:paddingEnd="8dp"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constraintStart_toEndOf="@id/iv_profile_image"
-            app:layout_constraintTop_toBottomOf="@+id/tv_user_name" />
-
-        <TextView
-            android:id="@+id/tv_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:autoLink="all"
-            android:gravity="fill"
-            android:linksClickable="true"
-            android:paddingStart="8dp"
-            android:paddingTop="4dp"
-            android:scrollHorizontally="true"
-            android:textAppearance="?attr/textAppearanceBody1"
-            app:layout_constraintStart_toEndOf="@id/iv_profile_image"
-            app:layout_constraintTop_toBottomOf="@+id/tv_created_at" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
