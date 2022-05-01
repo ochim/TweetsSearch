@@ -7,7 +7,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tweetssearch.R
 import com.example.tweetssearch.model.Tweet
-import com.example.tweetssearch.ui.TweetCell
+import com.example.tweetssearch.ui.home.TweetCell
 
 class TweetAdapter(
     private var dataset: List<Tweet> = emptyList(),

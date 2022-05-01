@@ -1,4 +1,4 @@
-package com.example.tweetssearch.ui
+package com.example.tweetssearch.ui.home
 
 import android.content.Context
 import android.graphics.Color
@@ -25,6 +25,8 @@ import com.example.tweetssearch.data.repository.TweetsSearchRepository
 import com.example.tweetssearch.data.repository.TwitterRepository
 import com.example.tweetssearch.databinding.FragmentHomeBinding
 import com.example.tweetssearch.model.TweetNetworkModelState
+import com.example.tweetssearch.ui.MainViewModel
+import com.example.tweetssearch.ui.MainViewModelFactory
 import com.example.tweetssearch.ui.adapter.TweetAdapter
 import com.example.tweetssearch.ui.component.LoadingDialog
 import kotlinx.coroutines.Dispatchers

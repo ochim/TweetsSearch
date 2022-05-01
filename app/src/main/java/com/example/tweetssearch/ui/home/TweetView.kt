@@ -1,4 +1,4 @@
-package com.example.tweetssearch.ui
+package com.example.tweetssearch.ui.home
 
 import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
