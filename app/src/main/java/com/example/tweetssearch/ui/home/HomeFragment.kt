@@ -11,31 +11,23 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.tweetssearch.data.database.Database
-import com.example.tweetssearch.data.repository.AccessTokenInterface
-import com.example.tweetssearch.data.repository.AccessTokenRepository
-import com.example.tweetssearch.data.repository.KeywordsRepository
-import com.example.tweetssearch.data.repository.TweetsRemoteDataSource
-import com.example.tweetssearch.data.repository.TweetsSearchInterface
-import com.example.tweetssearch.data.repository.TweetsSearchRepository
-import com.example.tweetssearch.data.repository.TwitterRepository
 import com.example.tweetssearch.databinding.FragmentHomeBinding
 import com.example.tweetssearch.model.TweetNetworkModelState
 import com.example.tweetssearch.ui.MainViewModel
-import com.example.tweetssearch.ui.MainViewModelFactory
 import com.example.tweetssearch.ui.adapter.TweetAdapter
 import com.example.tweetssearch.ui.component.LoadingDialog
-import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 
 
 /**
  * 開始地点となるフラグメント
  */
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var loading: LoadingDialog? = null
 
@@ -45,25 +37,7 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val viewModel: MainViewModel by viewModels {
-        MainViewModelFactory(
-            TweetsSearchRepository(
-                TweetsRemoteDataSource(
-                    Dispatchers.IO,
-                    TwitterRepository.retrofit.create(TweetsSearchInterface::class.java)
-                )
-            ),
-            KeywordsRepository(
-                Dispatchers.IO,
-                Database.db?.keywordHistoryDao()
-            ),
-            AccessTokenRepository(
-                Dispatchers.IO,
-                TwitterRepository.retrofit.create(AccessTokenInterface::class.java),
-                requireContext()
-            )
-        )
-    }
+    @Inject lateinit var viewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

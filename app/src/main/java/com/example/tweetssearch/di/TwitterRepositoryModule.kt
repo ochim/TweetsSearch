@@ -1,4 +1,4 @@
-package com.example.tweetssearch.data.repository
+package com.example.tweetssearch.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -10,7 +10,8 @@ import java.util.concurrent.TimeUnit
 
 private const val TWITTER_API_URL = "https://api.twitter.com/"
 
-object TwitterRepository {
+object TwitterRepositoryModule {
+
     var retrofit: Retrofit
 
     init {
@@ -32,5 +33,4 @@ object TwitterRepository {
             level = HttpLoggingInterceptor.Level.BODY
         })
         .build()
-
 }

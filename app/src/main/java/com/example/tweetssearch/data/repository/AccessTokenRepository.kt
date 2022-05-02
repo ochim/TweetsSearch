@@ -34,8 +34,7 @@ data class AccessToken(val token_type: String, val access_token: String)
 
 class AccessTokenRepository(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val accessTokenInterface: AccessTokenInterface =
-        TwitterRepository.retrofit.create(AccessTokenInterface::class.java),
+    private val accessTokenInterface: AccessTokenInterface,
     private val context: Context
 ) {
 
