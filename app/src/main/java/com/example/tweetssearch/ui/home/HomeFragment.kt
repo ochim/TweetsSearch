@@ -18,7 +18,8 @@ import com.example.tweetssearch.databinding.FragmentHomeBinding
 import com.example.tweetssearch.model.TweetNetworkModelState
 import com.example.tweetssearch.ui.MainViewModel
 import com.example.tweetssearch.ui.adapter.TweetAdapter
-import com.example.tweetssearch.ui.component.LoadingDialog
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -29,7 +30,7 @@ import javax.inject.Inject
  */
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
-    private var loading: LoadingDialog? = null
+    private lateinit var loadingBar: Snackbar
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -37,7 +38,8 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    @Inject lateinit var viewModel: MainViewModel
+    @Inject
+    lateinit var viewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +52,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loadingBar = Snackbar.make(view, "Loading...", BaseTransientBottomBar.LENGTH_SHORT)
+
         val keywordsRecyclerView: ComposeView = binding.recyclerKeywords
         val tweetsRecyclerView = binding.recyclerTweets
         val editText = binding.textInputEditText
@@ -98,20 +102,17 @@ class HomeFragment : Fragment() {
         viewModel.liveState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is TweetNetworkModelState.Fetching -> {
-                    loading = LoadingDialog.newInstance()
-                    loading!!.show(parentFragmentManager, "tag")
+                    loadingBar.show()
                 }
                 is TweetNetworkModelState.FetchedOK -> {
-                    loading?.dismiss()
-                    loading = null
+                    loadingBar.dismiss()
                     if (state.data.isNotEmpty()) {
                         (tweetsRecyclerView.adapter as TweetAdapter).updateDataSet(state.data)
                         tweetsRecyclerView.setHasFixedSize(true)
                     }
                 }
                 is TweetNetworkModelState.FetchedError -> {
-                    loading?.dismiss()
-                    loading = null
+                    loadingBar.dismiss()
                     Toast.makeText(requireActivity(), state.exception.message, Toast.LENGTH_LONG)
                         .show()
                 }
@@ -186,7 +187,7 @@ class HomeFragment : Fragment() {
             val firstPosition = manager.findFirstVisibleItemPosition()
 
             // 何度もリクエストしないようにロード中は何もしない。
-            if (loading != null && loading!!.showsDialog) {
+            if (loadingBar.isShown) {
                 return
             }
 
