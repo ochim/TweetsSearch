@@ -14,10 +14,11 @@ import com.example.tweetssearch.data.repository.TweetsSearchRepository
 import com.example.tweetssearch.model.Tweet
 import com.example.tweetssearch.model.TweetNetworkModelState
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel(
+class MainViewModel @Inject constructor (
     private val tweetsSearchRepository: TweetsSearchRepository,
-    private val keywordsRepository: KeywordsRepository = KeywordsRepository(),
+    private val keywordsRepository: KeywordsRepository,
     private val accessTokenRepository: AccessTokenRepository
 ) : ViewModel() {
 
@@ -71,7 +72,7 @@ class MainViewModel(
         mLiveState.value = TweetNetworkModelState.Fetching
 
         viewModelScope.launch {
-            var list: List<Tweet>? = null
+            val list: List<Tweet>?
 
             try {
                 list =

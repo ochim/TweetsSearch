@@ -31,8 +31,7 @@ data class SearchResult(val statuses: List<Tweet>?)
 
 class TweetsRemoteDataSource(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val searchInterface: TweetsSearchInterface =
-        TwitterRepository.retrofit.create(TweetsSearchInterface::class.java)
+    private val searchInterface: TweetsSearchInterface
 ) {
 
     suspend fun tweetsSearch(

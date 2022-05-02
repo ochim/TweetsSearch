@@ -3,11 +3,12 @@ package com.example.tweetssearch
 import android.app.Application
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.tweetssearch.data.database.Database
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
 val Context.dataStore by preferencesDataStore(name = "settings")
 
+@HiltAndroidApp
 class MainApplication: Application() {
 
     override fun onCreate() {
@@ -17,8 +18,6 @@ class MainApplication: Application() {
         } else {
             Timber.plant(CrashReportingTree())
         }
-
-        Database.setDb(applicationContext)
     }
 
     /** A tree which logs important information for crash reporting.  */
