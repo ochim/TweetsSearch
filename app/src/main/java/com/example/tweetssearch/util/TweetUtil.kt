@@ -14,7 +14,7 @@ class TweetUtil {
             val newFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.US)
             return newFormat.format(date)
         } catch (e: Exception) {
-            return "format error"
+            return e::class.java.name
         }
 
     }

@@ -15,13 +15,13 @@ class TweetUtilTest {
     @Test
     fun convertCreatedAt_wrongFormat() {
         val s = TweetUtil().convertCreatedAt("2021/03/25 22:50:48 +0900")
-        assertThat("format error").isEqualTo(s)
+        assertThat("java.text.ParseException").isEqualTo(s)
     }
 
     @Test
     fun convertCreatedAt_emptyText() {
         val s = TweetUtil().convertCreatedAt("")
-        assertThat("format error").isEqualTo(s)
+        assertThat("java.text.ParseException").isEqualTo(s)
     }
 
 }
