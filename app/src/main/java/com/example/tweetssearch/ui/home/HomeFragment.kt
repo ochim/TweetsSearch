@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadingBar = Snackbar.make(view, "Loading...", BaseTransientBottomBar.LENGTH_SHORT)
+        loadingBar = Snackbar.make(view, "Loading...", BaseTransientBottomBar.LENGTH_INDEFINITE)
 
         val keywordsRecyclerView: ComposeView = binding.recyclerKeywords
         val tweetsRecyclerView = binding.recyclerTweets
