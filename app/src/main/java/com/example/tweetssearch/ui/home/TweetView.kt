@@ -54,7 +54,7 @@ fun TweetCell(tweet: Tweet) {
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = TweetUtil().convertCreatedAt(tweet.createdAt),
+                    text = TweetUtil().convert(tweet.createdAt),
                     style = MaterialTheme.typography.body2,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )

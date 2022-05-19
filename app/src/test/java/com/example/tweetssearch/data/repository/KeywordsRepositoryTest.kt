@@ -16,9 +16,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
+@Config(manifest= Config.NONE)
 class KeywordsRepositoryTest {
     private lateinit var keywordsRepository: KeywordsRepository
     private lateinit var db: AppDatabase
