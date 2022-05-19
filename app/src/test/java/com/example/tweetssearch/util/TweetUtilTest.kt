@@ -14,20 +14,20 @@ class TweetUtilTest {
 
     @Test
     fun 作成日時たる引数を日本時間の形式に変換する() {
-        val s = tweetUtil.convertCreatedAt("Thu Mar 25 13:50:48 +0000 2021")
+        val s = tweetUtil.convert("Thu Mar 25 13:50:48 +0000 2021")
         // 時差は９時間とする
         assertThat("2021/03/25 22:50:48").isEqualTo(s)
     }
 
     @Test
     fun 作成日時たる引数の形式が誤りの場合に例外の文字列に変換する() {
-        val s = tweetUtil.convertCreatedAt("2021/03/25 22:50:48 +0900")
+        val s = tweetUtil.convert("2021/03/25 22:50:48 +0900")
         assertThat("java.text.ParseException").isEqualTo(s)
     }
 
     @Test
     fun 作成日時たる引数が空の場合に例外の文字列に変換する() {
-        val s = tweetUtil.convertCreatedAt("")
+        val s = tweetUtil.convert("")
         assertThat("java.text.ParseException").isEqualTo(s)
     }
 

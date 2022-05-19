@@ -5,10 +5,10 @@ import java.util.Locale
 
 class TweetUtil {
 
-    fun convertCreatedAt(text: String) : String {
+    fun convert(createdAtText: String) : String {
         try {
             val format = SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US)
-            val date = format.parse(text)
+            val date = format.parse(createdAtText)
             date ?: return "null error"
 
             val newFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.US)
