@@ -11,9 +11,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.tweetssearch.R
 import com.example.tweetssearch.databinding.FragmentHomeBinding
 import com.example.tweetssearch.model.TweetNetworkModelState
 import com.example.tweetssearch.ui.MainViewModel
@@ -95,7 +97,25 @@ class HomeFragment : Fragment() {
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(Color.TRANSPARENT)
         swipeRefreshLayout.setColorSchemeColors(Color.TRANSPARENT)
 
-        tweetsRecyclerView.adapter = TweetAdapter() { editText.clearFocus() }
+        fun hideInputShowTweetsUI(view: View) {
+            keywordsRecyclerView.visibility = View.GONE
+            binding.buttonSearch.visibility = View.GONE
+            binding.buttonCancel.visibility = View.GONE
+            tweetsRecyclerView.visibility = View.VISIBLE
+            swipeRefreshLayout.visibility = View.VISIBLE
+
+            // hide the software keyboard
+            val imm =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+            imm?.hideSoftInputFromWindow(
+                view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS
+            )
+        }
+
+        tweetsRecyclerView.adapter = TweetAdapter() {
+            editText.clearFocus()
+            view.findNavController().navigate(R.id.action_homeFragment_to_detailFragment)
+        }
         tweetsRecyclerView.addOnScrollListener(InfiniteScrollListener(tweetsRecyclerView.adapter!!))
         tweetsRecyclerView.setHasFixedSize(true)
 
@@ -118,21 +138,6 @@ class HomeFragment : Fragment() {
                 }
                 else -> {}
             }
-        }
-
-        fun hideInputShowTweetsUI(view: View) {
-            keywordsRecyclerView.visibility = View.GONE
-            binding.buttonSearch.visibility = View.GONE
-            binding.buttonCancel.visibility = View.GONE
-            tweetsRecyclerView.visibility = View.VISIBLE
-            swipeRefreshLayout.visibility = View.VISIBLE
-
-            // hide the software keyboard
-            val imm =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-            imm?.hideSoftInputFromWindow(
-                view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS
-            )
         }
 
         editText.onFocusChangeListener = View.OnFocusChangeListener { view1, hasFocus ->
