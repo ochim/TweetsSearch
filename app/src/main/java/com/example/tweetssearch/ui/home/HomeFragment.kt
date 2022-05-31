@@ -112,34 +112,6 @@ class HomeFragment : Fragment() {
             )
         }
 
-        tweetsRecyclerView.adapter = TweetAdapter() {
-            editText.clearFocus()
-            view.findNavController().navigate(R.id.action_homeFragment_to_detailFragment)
-        }
-        tweetsRecyclerView.addOnScrollListener(InfiniteScrollListener(tweetsRecyclerView.adapter!!))
-        tweetsRecyclerView.setHasFixedSize(true)
-
-        viewModel.liveState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is TweetNetworkModelState.Fetching -> {
-                    loadingBar.show()
-                }
-                is TweetNetworkModelState.FetchedOK -> {
-                    loadingBar.dismiss()
-                    if (state.data.isNotEmpty()) {
-                        (tweetsRecyclerView.adapter as TweetAdapter).updateDataSet(state.data)
-                        tweetsRecyclerView.setHasFixedSize(true)
-                    }
-                }
-                is TweetNetworkModelState.FetchedError -> {
-                    loadingBar.dismiss()
-                    Toast.makeText(requireActivity(), state.exception.message, Toast.LENGTH_LONG)
-                        .show()
-                }
-                else -> {}
-            }
-        }
-
         editText.onFocusChangeListener = View.OnFocusChangeListener { view1, hasFocus ->
 
             if (hasFocus) {
@@ -166,7 +138,41 @@ class HomeFragment : Fragment() {
             false
         }
 
-        editText.requestFocus()
+        tweetsRecyclerView.adapter = TweetAdapter() {
+            editText.clearFocus()
+            view.findNavController().navigate(R.id.action_homeFragment_to_detailFragment)
+            viewModel.requireInputState = false
+        }
+        tweetsRecyclerView.addOnScrollListener(InfiniteScrollListener(tweetsRecyclerView.adapter!!))
+        tweetsRecyclerView.setHasFixedSize(true)
+
+        viewModel.liveState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is TweetNetworkModelState.Fetching -> {
+                    loadingBar.show()
+                }
+                is TweetNetworkModelState.FetchedOK -> {
+                    loadingBar.dismiss()
+                    if (state.data.isNotEmpty()) {
+                        (tweetsRecyclerView.adapter as TweetAdapter).updateDataSet(state.data)
+                        tweetsRecyclerView.setHasFixedSize(true)
+                    }
+                }
+                is TweetNetworkModelState.FetchedError -> {
+                    loadingBar.dismiss()
+                    Toast.makeText(requireActivity(), state.exception.message, Toast.LENGTH_LONG)
+                        .show()
+                }
+                else -> {}
+            }
+        }
+
+        if (viewModel.requireInputState) {
+            editText.requestFocus()
+        } else {
+            editText.clearFocus()
+            hideInputShowTweetsUI(editText)
+        }
     }
 
     override fun onDestroyView() {
