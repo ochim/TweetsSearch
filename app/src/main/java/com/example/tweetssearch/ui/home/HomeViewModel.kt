@@ -1,4 +1,4 @@
-package com.example.tweetssearch.ui
+package com.example.tweetssearch.ui.home
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +16,7 @@ import com.example.tweetssearch.model.TweetNetworkModelState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor (
+class HomeViewModel @Inject constructor (
     private val tweetsSearchRepository: TweetsSearchRepository,
     private val keywordsRepository: KeywordsRepository,
     private val accessTokenRepository: AccessTokenRepository
@@ -121,13 +121,13 @@ class MainViewModel @Inject constructor (
 
 }
 
-class MainViewModelFactory(
+class HomeViewModelFactory(
     private val tweetsSearchRepository: TweetsSearchRepository,
     private val keywordsRepository: KeywordsRepository,
     private val accessTokenRepository: AccessTokenRepository
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return MainViewModel(tweetsSearchRepository, keywordsRepository, accessTokenRepository) as T
+        return HomeViewModel(tweetsSearchRepository, keywordsRepository, accessTokenRepository) as T
     }
 }

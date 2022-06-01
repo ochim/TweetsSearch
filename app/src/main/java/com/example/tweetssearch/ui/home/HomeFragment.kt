@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.tweetssearch.databinding.FragmentHomeBinding
 import com.example.tweetssearch.model.TweetNetworkModelState
-import com.example.tweetssearch.ui.MainViewModel
 import com.example.tweetssearch.ui.adapter.TweetAdapter
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -40,7 +39,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     @Inject
-    lateinit var viewModel: MainViewModel
+    lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
