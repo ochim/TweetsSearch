@@ -70,7 +70,7 @@ fun TweetDetailView(tweet: Tweet) {
                     textAppearance = android.R.style.TextAppearance_Material_Headline,
                 )
                 Text(
-                    text = TweetUtil().convertCreatedAt(tweet.createdAt),
+                    text = TweetUtil().convert(tweet.createdAt),
                     style = MaterialTheme.typography.body1,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
