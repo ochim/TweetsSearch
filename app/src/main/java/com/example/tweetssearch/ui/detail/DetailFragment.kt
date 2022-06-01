@@ -1,20 +1,25 @@
 package com.example.tweetssearch.ui.detail
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.example.tweetssearch.R
+import com.example.tweetssearch.model.Tweet
 import com.google.android.material.composethemeadapter.MdcTheme
 
 class DetailFragment : Fragment() {
+    private val args: DetailFragmentArgs by navArgs()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_detail, container, false)
     }
@@ -24,7 +29,7 @@ class DetailFragment : Fragment() {
         val cv: ComposeView = view.findViewById(R.id.compose_view)
         cv.setContent {
             MdcTheme {
-                DetailView()
+                DetailView(args.argTweet)
             }
         }
     }
@@ -34,7 +39,6 @@ class DetailFragment : Fragment() {
 }
 
 @Composable
-fun DetailView() {
-    Text(text = "Detail View")
+fun DetailView(tweet: Tweet) {
+    Text(text = tweet.text)
 }
-
