@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/compose-model-1654073134396.xml" value="0.14354166666666668" />
+        <entry key="../../../../../layout/compose-model-1654073174316.xml" value="0.2909090909090909" />
+        <entry key="app/src/main/res/layout/fragment_detail.xml" value="0.11806256306760847" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1" />
         <entry key="app/src/main/res/layout/list_tweet.xml" value="0.1" />
       </map>

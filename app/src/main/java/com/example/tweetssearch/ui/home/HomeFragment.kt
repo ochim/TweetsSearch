@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -95,31 +96,6 @@ class HomeFragment : Fragment() {
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(Color.TRANSPARENT)
         swipeRefreshLayout.setColorSchemeColors(Color.TRANSPARENT)
 
-        tweetsRecyclerView.adapter = TweetAdapter() { editText.clearFocus() }
-        tweetsRecyclerView.addOnScrollListener(InfiniteScrollListener(tweetsRecyclerView.adapter!!))
-        tweetsRecyclerView.setHasFixedSize(true)
-
-        viewModel.liveState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is TweetNetworkModelState.Fetching -> {
-                    loadingBar.show()
-                }
-                is TweetNetworkModelState.FetchedOK -> {
-                    loadingBar.dismiss()
-                    if (state.data.isNotEmpty()) {
-                        (tweetsRecyclerView.adapter as TweetAdapter).updateDataSet(state.data)
-                        tweetsRecyclerView.setHasFixedSize(true)
-                    }
-                }
-                is TweetNetworkModelState.FetchedError -> {
-                    loadingBar.dismiss()
-                    Toast.makeText(requireActivity(), state.exception.message, Toast.LENGTH_LONG)
-                        .show()
-                }
-                else -> {}
-            }
-        }
-
         fun hideInputShowTweetsUI(view: View) {
             keywordsRecyclerView.visibility = View.GONE
             binding.buttonSearch.visibility = View.GONE
@@ -161,7 +137,42 @@ class HomeFragment : Fragment() {
             false
         }
 
-        editText.requestFocus()
+        tweetsRecyclerView.adapter = TweetAdapter() {
+            editText.clearFocus()
+            viewModel.requireInputState = false
+            val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(it)
+            view.findNavController().navigate(action)
+        }
+        tweetsRecyclerView.addOnScrollListener(InfiniteScrollListener(tweetsRecyclerView.adapter!!))
+        tweetsRecyclerView.setHasFixedSize(true)
+
+        viewModel.liveState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is TweetNetworkModelState.Fetching -> {
+                    loadingBar.show()
+                }
+                is TweetNetworkModelState.FetchedOK -> {
+                    loadingBar.dismiss()
+                    if (state.data.isNotEmpty()) {
+                        (tweetsRecyclerView.adapter as TweetAdapter).updateDataSet(state.data)
+                        tweetsRecyclerView.setHasFixedSize(true)
+                    }
+                }
+                is TweetNetworkModelState.FetchedError -> {
+                    loadingBar.dismiss()
+                    Toast.makeText(requireActivity(), state.exception.message, Toast.LENGTH_LONG)
+                        .show()
+                }
+                else -> {}
+            }
+        }
+
+        if (viewModel.requireInputState) {
+            editText.requestFocus()
+        } else {
+            editText.clearFocus()
+            hideInputShowTweetsUI(editText)
+        }
     }
 
     override fun onDestroyView() {

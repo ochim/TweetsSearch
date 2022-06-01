@@ -29,6 +29,8 @@ class MainViewModel @Inject constructor (
     var keywordsState by mutableStateOf<List<String>>(emptyList())
         private set
 
+    var requireInputState by mutableStateOf(true)
+
     private var nowTweets: List<Tweet>? = null
     private var nowQuery: String? = null
 
