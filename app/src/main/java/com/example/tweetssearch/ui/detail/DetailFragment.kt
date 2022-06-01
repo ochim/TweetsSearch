@@ -18,16 +18,11 @@ class DetailFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_detail, container, false)
+            .apply {
+                findViewById<ComposeView>(R.id.compose_view).setContent {
+                    TweetDetailView(args.argTweet)
+                }
+            }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val cv: ComposeView = view.findViewById(R.id.compose_view)
-        cv.setContent {
-            TweetDetailView(args.argTweet)
-        }
-    }
-
-    companion object {
-    }
 }

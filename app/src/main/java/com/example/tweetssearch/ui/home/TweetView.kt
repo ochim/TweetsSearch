@@ -19,7 +19,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.util.LinkifyCompat
@@ -27,7 +26,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.tweetssearch.R
 import com.example.tweetssearch.model.Tweet
-import com.example.tweetssearch.model.User
 import com.example.tweetssearch.util.TweetUtil
 import com.google.android.material.composethemeadapter.MdcTheme
 
@@ -68,13 +66,17 @@ fun TweetCell(tweet: Tweet) {
 
 @Composable
 // https://stackoverflow.com/a/68670583/11658192
-fun DefaultLinkifyText(modifier: Modifier = Modifier, text: String?) {
+fun DefaultLinkifyText(
+    modifier: Modifier = Modifier,
+    text: String?,
+    textAppearance: Int = android.R.style.TextAppearance_Material_Body2
+) {
     val context = LocalContext.current
     val customLinkifyTextView = remember {
         TextView(context)
     }
     AndroidView(modifier = modifier, factory = { customLinkifyTextView }) { textView ->
-        textView.setTextAppearance(android.R.style.TextAppearance_Material_Body2)
+        textView.setTextAppearance(textAppearance)
         textView.text = text ?: ""
         LinkifyCompat.addLinks(textView, Linkify.ALL)
         Linkify.addLinks(
@@ -83,30 +85,4 @@ fun DefaultLinkifyText(modifier: Modifier = Modifier, text: String?) {
         )
         textView.movementMethod = LinkMovementMethod.getInstance()
     }
-}
-
-@Preview("Light Theme")
-@Composable
-fun TweetCellPreviewLight() {
-    TweetCell(
-        tweet = Tweet(
-            text = "Hello",
-            createdAt = "Thu April 29 13:50:48 +0000 2022",
-            id = 1,
-            user = User("hoge", "foo", "")
-        )
-    )
-}
-
-@Preview("Dark Theme")
-@Composable
-fun TweetCellPreviewDark() {
-    TweetCell(
-        tweet = Tweet(
-            text = "Hello",
-            createdAt = "Thu April 29 13:50:48 +0000 2022",
-            id = 1,
-            user = User("hoge", "foo", "")
-        )
-    )
 }
