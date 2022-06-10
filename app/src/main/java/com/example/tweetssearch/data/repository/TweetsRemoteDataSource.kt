@@ -66,7 +66,8 @@ class TweetsRemoteDataSource(
             } else {
                 //WEB APIから取得する
                 val response = searchInterface
-                    .nextTweetsSearch("Bearer $accessToken", q, max_id, count)
+                        // 次候補なのでmax_id -1
+                    .nextTweetsSearch("Bearer $accessToken", q, max_id -1, count)
                     .execute()
                 if (response.isSuccessful) {
                     val result = response.body()!!

@@ -96,11 +96,6 @@ class HomeViewModel @Inject constructor (
             }
 
             val newList = nowTweets!!.toMutableList()
-
-            // 現行の最古のツイートと次候補の先頭のツイートが同じ場合、現行の最古のツイートを消す。
-            if (list.first().id == tweet.id) {
-                newList.remove(tweet)
-            }
             newList.addAll(list)
 
             nowTweets = newList.toList()
