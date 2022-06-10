@@ -41,9 +41,9 @@ class AccessTokenRepository(
     suspend fun getAccessToken(): String? {
         return withContext(ioDispatcher) {
 
-            val accessTokenData = runBlocking { context.dataStore.data.first() }
-            if (!accessTokenData[ACCESS_TOKEN].isNullOrEmpty()) {
-                return@withContext accessTokenData[ACCESS_TOKEN]
+            val accessTokenData = runBlocking { accessTokenInDataStore() }
+            if (!accessTokenData.isNullOrEmpty()) {
+                return@withContext accessTokenData
             }
 
             //WEB APIから取得する
@@ -65,5 +65,10 @@ class AccessTokenRepository(
         context.dataStore.edit { settings ->
             settings[ACCESS_TOKEN] = ""
         }
+    }
+
+    suspend fun accessTokenInDataStore(): String? {
+        val accessTokenData = context.dataStore.data.first()
+        return accessTokenData[ACCESS_TOKEN]
     }
 }
