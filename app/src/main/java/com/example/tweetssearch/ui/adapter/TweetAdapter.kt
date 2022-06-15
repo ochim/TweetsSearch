@@ -4,15 +4,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tweetssearch.R
 import com.example.tweetssearch.model.Tweet
 import com.example.tweetssearch.ui.home.TweetCell
 
 class TweetAdapter(
-    private var dataset: List<Tweet> = emptyList(),
     private val onClick: (Tweet) -> Unit
-) : RecyclerView.Adapter<TweetAdapter.ItemViewHolder>() {
+) : ListAdapter<Tweet, TweetAdapter.ItemViewHolder>(DIFF_UTIL_ITEM_CALLBACK) {
 
     class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val tweetCell: ComposeView = view.findViewById(R.id.tweet_cell)
@@ -26,17 +27,20 @@ class TweetAdapter(
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        val tweet = dataset[position]
-        holder.tweetCell.setContent { 
+        val tweet = getItem(position)
+        holder.tweetCell.setContent {
             TweetCell(tweet)
         }
         holder.view.setOnClickListener { onClick(tweet) }
     }
 
-    override fun getItemCount() = dataset.size
+    companion object {
+        val DIFF_UTIL_ITEM_CALLBACK = object : DiffUtil.ItemCallback<Tweet>() {
+            override fun areItemsTheSame(oldItem: Tweet, newItem: Tweet) =
+                oldItem.id == newItem.id
 
-    fun updateDataSet(data: List<Tweet>) {
-        dataset = data
-        notifyDataSetChanged()
+            override fun areContentsTheSame(oldItem: Tweet, newItem: Tweet) =
+                oldItem.id == newItem.id
+        }
     }
 }
