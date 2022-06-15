@@ -153,7 +153,7 @@ class HomeFragment : Fragment() {
                 is TweetNetworkModelState.FetchedOK -> {
                     loadingBar.dismiss()
                     if (state.data.isNotEmpty()) {
-                        (tweetsRecyclerView.adapter as TweetAdapter).updateDataSet(state.data)
+                        (tweetsRecyclerView.adapter as TweetAdapter).submitList(state.data)
                         tweetsRecyclerView.setHasFixedSize(true)
                     }
                 }
