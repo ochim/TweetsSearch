@@ -50,7 +50,7 @@ class HomeViewModel @Inject constructor (
                         accessTokenRepository
                     )
                 if (!list.isNullOrEmpty()) {
-                    mLiveState.postValue(TweetNetworkModelState.FetchedOK(list))
+                    mLiveState.postValue(TweetNetworkModelState.RefreshedOK(list))
                     nowTweets = list
                 } else {
                     mLiveState.postValue(TweetNetworkModelState.FetchedError(Exception("empty")))
@@ -91,7 +91,7 @@ class HomeViewModel @Inject constructor (
             }
 
             if (list.isNullOrEmpty()) {
-                mLiveState.postValue(TweetNetworkModelState.FetchedOK(emptyList()))
+                mLiveState.postValue(TweetNetworkModelState.AppendedOK(emptyList()))
                 return@launch
             }
 
@@ -99,7 +99,7 @@ class HomeViewModel @Inject constructor (
             newList.addAll(list)
 
             nowTweets = newList.toList()
-            mLiveState.postValue(TweetNetworkModelState.FetchedOK(newList))
+            mLiveState.postValue(TweetNetworkModelState.AppendedOK(newList))
         }
     }
 

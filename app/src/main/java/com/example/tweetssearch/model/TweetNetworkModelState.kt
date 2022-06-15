@@ -10,8 +10,11 @@ sealed class TweetNetworkModelState<out T> {
     /** 読み込み中 */
     object Fetching : TweetNetworkModelState<Nothing>()
 
-    /** 読み込みが終わって正常系 */
-    class FetchedOK<out T>(val data: T) : TweetNetworkModelState<T>()
+    /** 更新読み込みが終わって正常系 */
+    class RefreshedOK<out T>(val data: T) : TweetNetworkModelState<T>()
+
+    /** 追加読み込みが終わって正常系 */
+    class AppendedOK<out T>(val data: T) : TweetNetworkModelState<T>()
 
     /** 読み込みが終わってエラー系 */
     class FetchedError(val exception: Exception) : TweetNetworkModelState<Nothing>()
