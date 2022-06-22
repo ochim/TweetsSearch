@@ -40,7 +40,7 @@ class TweetAdapter(
                 oldItem.id == newItem.id
 
             override fun areContentsTheSame(oldItem: Tweet, newItem: Tweet) =
-                oldItem.id == newItem.id
+                oldItem == newItem
         }
     }
 }
