@@ -1,5 +1,6 @@
 package com.example.tweetssearch.data.repository
 
+import androidx.annotation.Keep
 import com.example.tweetssearch.model.Tweet
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +28,7 @@ interface TweetsSearchInterface {
 
 }
 
+@Keep
 data class SearchResult(val statuses: List<Tweet>?)
 
 class TweetsRemoteDataSource(

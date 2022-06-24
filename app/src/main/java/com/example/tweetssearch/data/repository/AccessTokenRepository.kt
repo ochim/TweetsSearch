@@ -1,6 +1,7 @@
 package com.example.tweetssearch.data.repository
 
 import android.content.Context
+import androidx.annotation.Keep
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.tweetssearch.BuildConfig
@@ -30,6 +31,7 @@ interface AccessTokenInterface {
     ): Call<AccessToken>
 }
 
+@Keep
 data class AccessToken(val token_type: String, val access_token: String)
 
 class AccessTokenRepository(
