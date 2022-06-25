@@ -58,15 +58,6 @@ class HomeFragment : Fragment() {
         val tweetsRecyclerView = binding.recyclerTweets
         val editText = binding.textInputEditText
 
-        binding.buttonSearch.setOnClickListener() {
-            val text = editText.text.toString()
-            if (text.isNotEmpty()) {
-                viewModel.tweetsSearch(text)
-                editText.setText(text)
-            }
-            editText.clearFocus()
-        }
-
         binding.buttonCancel.setOnClickListener { editText.clearFocus() }
 
         val keywordClick: (String) -> Unit = { keyword ->
@@ -97,7 +88,6 @@ class HomeFragment : Fragment() {
 
         fun hideInputShowTweetsUI(view: View) {
             keywordsRecyclerView.visibility = View.GONE
-            binding.buttonSearch.visibility = View.GONE
             binding.buttonCancel.visibility = View.GONE
             tweetsRecyclerView.visibility = View.VISIBLE
             swipeRefreshLayout.visibility = View.VISIBLE
@@ -115,7 +105,6 @@ class HomeFragment : Fragment() {
             if (hasFocus) {
                 viewModel.loadKeywordsHistory()
                 keywordsRecyclerView.visibility = View.VISIBLE
-                binding.buttonSearch.visibility = View.VISIBLE
                 binding.buttonCancel.visibility = View.VISIBLE
                 tweetsRecyclerView.visibility = View.INVISIBLE
                 swipeRefreshLayout.visibility = View.INVISIBLE
