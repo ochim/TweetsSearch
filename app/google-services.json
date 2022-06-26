@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "993096214243",
+    "project_id": "tweetssearch",
+    "storage_bucket": "tweetssearch.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:993096214243:android:49fc7163b3fae9a50e07d6",
+        "android_client_info": {
+          "package_name": "com.example.tweetssearch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "993096214243-87cj21qjscuho5cf9britm2pr9v3su6m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQWx2qj3vdD2e0ewsiJQ4uXC-8FEq_S4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "993096214243-87cj21qjscuho5cf9britm2pr9v3su6m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
