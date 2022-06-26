@@ -116,7 +116,6 @@ class HomeFragment : Fragment() {
         editText.setOnEditorActionListener { textView, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (textView.text.isNotEmpty()) {
-                    editText.clearFocus()
                     hideInputShowTweetsUI(textView)
                     viewModel.tweetsSearch(textView.text.toString())
                 }
@@ -146,6 +145,7 @@ class HomeFragment : Fragment() {
                         tweetsRecyclerView.setHasFixedSize(true)
                         tweetsRecyclerView.scrollToPosition(0)
                     }
+                    editText.clearFocus()
                 }
                 is TweetNetworkModelState.AppendedOK -> {
                     loadingBar.dismiss()
@@ -158,6 +158,7 @@ class HomeFragment : Fragment() {
                     loadingBar.dismiss()
                     Toast.makeText(requireActivity(), state.exception.message, Toast.LENGTH_LONG)
                         .show()
+                    editText.clearFocus()
                 }
                 else -> {}
             }

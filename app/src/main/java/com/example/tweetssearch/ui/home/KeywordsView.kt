@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,11 +17,8 @@ import com.google.android.material.composethemeadapter.MdcTheme
 
 @Composable
 fun KeywordsList(keywords: List<String>, onItemClick: (String) -> Unit) {
-    val listState = rememberLazyListState()
-
     MdcTheme {
         LazyColumn(
-            state = listState,
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
