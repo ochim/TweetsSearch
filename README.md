@@ -6,8 +6,7 @@ Tweets Search
 cVU1OGU3SURJdElqNUl3U2YyY1NjSnhLbDpZVUJoQ0VCTWJIREdWbU9aRjhrNkhHMGJvcm10dkx5QWM2and4R2VZbXdyM2VhemVJSw==
 
 ## Demo
-最新の状態ではないです
-- ![Demo](https://user-images.githubusercontent.com/7196624/150772204-9de521ee-e29e-42ca-825d-e9d6baa56bb2.gif)
+Please register from [the link](https://appdistribution.firebase.dev/i/eb92f5ec4669a0d3)
 
 ## 仕様
 Twitterの公開APIを使⽤して、ツイートの検索をするアプリです。
