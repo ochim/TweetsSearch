@@ -10,10 +10,12 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 import retrofit2.Call
 import retrofit2.mock.BehaviorDelegate
 
 @RunWith(AndroidJUnit4::class)
+@Config(manifest=Config.NONE)
 class AccessTokenRepositoryTest {
     private lateinit var repository: AccessTokenRepository
 
