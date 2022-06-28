@@ -9,7 +9,6 @@ import com.example.tweetssearch.data.database.KeywordHistory
 import com.example.tweetssearch.data.database.KeywordHistoryDao
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -35,9 +34,9 @@ class KeywordsRepositoryTest {
         dao = db.keywordHistoryDao()
         keywordsRepository = KeywordsRepository(Dispatchers.IO, dao)
         runBlocking {
-            val history0 = KeywordHistory(0, "hoge", System.currentTimeMillis() / 1000)
-            delay(1000L)
-            val history1 = KeywordHistory(0, "foo", System.currentTimeMillis() / 1000)
+            val time = System.currentTimeMillis()
+            val history0 = KeywordHistory(0, "hoge", (time - 2000L) / 1000)
+            val history1 = KeywordHistory(0, "foo", (time - 1000L) / 1000)
             launch(Dispatchers.IO) {
                 dao.insertAll(history0, history1)
             }
@@ -61,7 +60,6 @@ class KeywordsRepositoryTest {
     @Test
     fun saveKeyword_success() {
         runBlocking {
-            delay(1000L)
             keywordsRepository.saveKeyword("piyo")
         }
         runBlocking {
